@@ -7,6 +7,7 @@ const CHUNKS_COLLECTION = 'chunks';
 
 export interface Document {
   id: string;
+  botId: string;
   filename: string;
   path: string;
   contentType: string;
@@ -19,6 +20,7 @@ export interface Document {
 
 export interface Chunk {
   id: string;
+  botId: string;
   documentId: string;
   content: string;
   embedding: number[];
@@ -76,6 +78,7 @@ export async function updateDocumentStatus(
  * Save document chunks with embeddings
  */
 export async function saveChunks(
+  botId: string,
   documentId: string,
   chunks: Array<{ content: string; embedding: number[]; tokenCount: number }>
 ): Promise<Chunk[]> {
@@ -87,6 +90,7 @@ export async function saveChunks(
     const chunkRef = db.collection(CHUNKS_COLLECTION).doc();
     const chunk: Chunk = {
       id: chunkRef.id,
+      botId,
       documentId,
       content: chunks[i].content,
       embedding: chunks[i].embedding,
@@ -130,14 +134,20 @@ export async function getDocument(id: string): Promise<Document | null> {
 }
 
 /**
- * List all documents
+ * List documents (optionally by botId)
  */
-export async function listDocuments(): Promise<Document[]> {
+export async function listDocuments(botId?: string): Promise<Document[]> {
   const db = firestore();
-  const snapshot = await db
-    .collection(DOCUMENTS_COLLECTION)
-    .orderBy('createdAt', 'desc')
-    .get();
+  let query = db.collection(DOCUMENTS_COLLECTION).orderBy('createdAt', 'desc');
+
+  if (botId) {
+    query = db
+      .collection(DOCUMENTS_COLLECTION)
+      .where('botId', '==', botId)
+      .orderBy('createdAt', 'desc');
+  }
+
+  const snapshot = await query.get();
 
   return snapshot.docs.map((doc) => {
     const data = doc.data();
@@ -173,14 +183,16 @@ export async function deleteDocumentAndChunks(documentId: string): Promise<void>
  * Search for similar chunks using Firestore native vector search
  */
 export async function searchSimilarChunks(
+  botId: string,
   queryEmbedding: number[],
   limit: number = 5
 ): Promise<SearchResult[]> {
   const db = firestore();
 
-  // Use Firestore native vector search (findNearest)
+  // Use Firestore native vector search with bot filter
   const vectorQuery: VectorQuery = db
     .collection(CHUNKS_COLLECTION)
+    .where('botId', '==', botId)
     .findNearest('embedding', queryEmbedding, {
       limit,
       distanceMeasure: 'COSINE',
@@ -194,6 +206,7 @@ export async function searchSimilarChunks(
     const data = doc.data();
     const chunk: Chunk = {
       id: doc.id,
+      botId: data.botId,
       documentId: data.documentId,
       content: data.content,
       embedding: [], // Don't return embedding in results

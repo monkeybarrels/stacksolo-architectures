@@ -1,5 +1,12 @@
 import { useState, useRef, useEffect, useCallback } from 'react';
 
+interface Bot {
+  id: string;
+  name: string;
+  description: string;
+  isPublic: boolean;
+}
+
 interface Source {
   documentId: string;
   filename: string;
@@ -21,6 +28,8 @@ interface Document {
 }
 
 function App() {
+  const [bots, setBots] = useState<Bot[]>([]);
+  const [selectedBot, setSelectedBot] = useState<Bot | null>(null);
   const [messages, setMessages] = useState<Message[]>([]);
   const [input, setInput] = useState('');
   const [loading, setLoading] = useState(false);
@@ -31,6 +40,7 @@ function App() {
   const [documents, setDocuments] = useState<Document[]>([]);
   const [uploading, setUploading] = useState(false);
   const [showDocs, setShowDocs] = useState(false);
+  const [botsLoading, setBotsLoading] = useState(true);
   const messagesEndRef = useRef<HTMLDivElement>(null);
   const fileInputRef = useRef<HTMLInputElement>(null);
 
@@ -42,14 +52,43 @@ function App() {
     scrollToBottom();
   }, [messages, streamingContent, scrollToBottom]);
 
-  // Load documents on mount
+  // Load bots on mount
   useEffect(() => {
-    loadDocuments();
+    loadBots();
   }, []);
 
-  const loadDocuments = async () => {
+  // Load documents when bot changes
+  useEffect(() => {
+    if (selectedBot) {
+      loadDocuments();
+      // Reset conversation when switching bots
+      setMessages([]);
+      setConversationId(null);
+    }
+  }, [selectedBot]);
+
+  const loadBots = async () => {
+    setBotsLoading(true);
     try {
-      const response = await fetch('/api/documents');
+      const response = await fetch('/api/bots');
+      const data = await response.json();
+      const botList = data.bots || [];
+      setBots(botList);
+      // Auto-select first bot if available
+      if (botList.length > 0 && !selectedBot) {
+        setSelectedBot(botList[0]);
+      }
+    } catch (error) {
+      console.error('Failed to load bots:', error);
+    } finally {
+      setBotsLoading(false);
+    }
+  };
+
+  const loadDocuments = async () => {
+    if (!selectedBot) return;
+    try {
+      const response = await fetch(`/api/bots/${selectedBot.id}/documents`);
       const data = await response.json();
       setDocuments(data.documents || []);
     } catch (error) {
@@ -59,12 +98,12 @@ function App() {
 
   const handleFileUpload = async (event: React.ChangeEvent<HTMLInputElement>) => {
     const file = event.target.files?.[0];
-    if (!file) return;
+    if (!file || !selectedBot) return;
 
     setUploading(true);
     try {
       // 1. Get signed upload URL
-      const urlResponse = await fetch('/api/documents/upload-url', {
+      const urlResponse = await fetch(`/api/bots/${selectedBot.id}/documents/upload-url`, {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify({
@@ -115,10 +154,12 @@ function App() {
   };
 
   const sendMessageStreaming = async (userMessage: string) => {
+    if (!selectedBot) throw new Error('No bot selected');
+
     setStreamingContent('');
     setStreamingSources([]);
 
-    const response = await fetch('/api/chat', {
+    const response = await fetch(`/api/bots/${selectedBot.id}/chat`, {
       method: 'POST',
       headers: { 'Content-Type': 'application/json' },
       body: JSON.stringify({
@@ -150,7 +191,6 @@ function App() {
 
       for (const line of lines) {
         if (line.startsWith('event: ')) {
-          const event = line.slice(7);
           continue;
         }
         if (line.startsWith('data: ')) {
@@ -177,7 +217,7 @@ function App() {
   };
 
   const sendMessage = async () => {
-    if (!input.trim() || loading) return;
+    if (!input.trim() || loading || !selectedBot) return;
 
     const userMessage = input.trim();
     setInput('');
@@ -217,17 +257,63 @@ function App() {
     setShowSources(showSources === index ? null : index);
   };
 
+  const handleBotChange = (botId: string) => {
+    const bot = bots.find((b) => b.id === botId);
+    if (bot) {
+      setSelectedBot(bot);
+    }
+  };
+
+  // Show bot selector if loading or no bots
+  if (botsLoading) {
+    return (
+      <div className="chat-container">
+        <div className="empty-state">Loading bots...</div>
+      </div>
+    );
+  }
+
+  if (bots.length === 0) {
+    return (
+      <div className="chat-container">
+        <div className="chat-header">
+          <h1>RAG Platform Chat</h1>
+        </div>
+        <div className="empty-state">
+          <p>No bots available.</p>
+          <p>Create a bot in the Admin dashboard to get started.</p>
+        </div>
+      </div>
+    );
+  }
+
   return (
     <div className="chat-container">
       <div className="chat-header">
-        <h1>RAG Platform Chat</h1>
-        <button
-          className="docs-toggle"
-          onClick={() => setShowDocs(!showDocs)}
-        >
-          {showDocs ? 'Hide' : 'Show'} Documents ({documents.filter(d => d.status === 'ready').length})
+        <div className="header-left">
+          <h1>RAG Platform Chat</h1>
+          <select
+            className="bot-selector"
+            value={selectedBot?.id || ''}
+            onChange={(e) => handleBotChange(e.target.value)}
+          >
+            {bots.map((bot) => (
+              <option key={bot.id} value={bot.id}>
+                {bot.name}
+              </option>
+            ))}
+          </select>
+        </div>
+        <button className="docs-toggle" onClick={() => setShowDocs(!showDocs)}>
+          {showDocs ? 'Hide' : 'Show'} Documents ({documents.filter((d) => d.status === 'ready').length})
         </button>
       </div>
+
+      {selectedBot && (
+        <div className="bot-description-bar">
+          {selectedBot.description || 'No description'}
+        </div>
+      )}
 
       {showDocs && (
         <div className="documents-panel">
@@ -253,13 +339,8 @@ function App() {
                 <li key={doc.id} className="document-item">
                   <span className="doc-name">{doc.filename}</span>
                   <span className={`doc-status ${doc.status}`}>{doc.status}</span>
-                  {doc.status === 'ready' && (
-                    <span className="doc-chunks">{doc.chunkCount} chunks</span>
-                  )}
-                  <button
-                    className="doc-delete"
-                    onClick={() => handleDeleteDocument(doc.id)}
-                  >
+                  {doc.status === 'ready' && <span className="doc-chunks">{doc.chunkCount} chunks</span>}
+                  <button className="doc-delete" onClick={() => handleDeleteDocument(doc.id)}>
                     Delete
                   </button>
                 </li>
@@ -271,23 +352,17 @@ function App() {
 
       <div className="chat-messages">
         {messages.length === 0 && !streamingContent && (
-          <div className="empty-state">
-            Start a conversation by typing a message below.
-          </div>
+          <div className="empty-state">Start a conversation by typing a message below.</div>
         )}
 
         {messages.map((message, index) => (
           <div key={index} className="message-wrapper">
-            <div className={`message ${message.role}`}>
-              {message.content}
-            </div>
+            <div className={`message ${message.role}`}>{message.content}</div>
             {message.sources && message.sources.length > 0 && (
               <div className="sources-container">
-                <button
-                  className="sources-toggle"
-                  onClick={() => toggleSources(index)}
-                >
-                  {showSources === index ? 'Hide' : 'Show'} {message.sources.length} source{message.sources.length > 1 ? 's' : ''}
+                <button className="sources-toggle" onClick={() => toggleSources(index)}>
+                  {showSources === index ? 'Hide' : 'Show'} {message.sources.length} source
+                  {message.sources.length > 1 ? 's' : ''}
                 </button>
                 {showSources === index && (
                   <div className="sources-list">
@@ -341,14 +416,10 @@ function App() {
           value={input}
           onChange={(e) => setInput(e.target.value)}
           onKeyPress={handleKeyPress}
-          placeholder="Type your message..."
-          disabled={loading}
+          placeholder={selectedBot ? `Ask ${selectedBot.name}...` : 'Select a bot to start'}
+          disabled={loading || !selectedBot}
         />
-        <button
-          className="send-button"
-          onClick={sendMessage}
-          disabled={loading || !input.trim()}
-        >
+        <button className="send-button" onClick={sendMessage} disabled={loading || !input.trim() || !selectedBot}>
           Send
         </button>
       </div>

@@ -2,6 +2,7 @@ import express from 'express';
 import cors from 'cors';
 import { chatRouter } from './routes/chat';
 import { documentsRouter } from './routes/documents';
+import { botsRouter } from './routes/bots';
 
 const app = express();
 const PORT = process.env.PORT || 8080;
@@ -15,6 +16,7 @@ app.get('/health', (req, res) => {
 });
 
 // API routes
+app.use('/api', botsRouter);
 app.use('/api', chatRouter);
 app.use('/api', documentsRouter);
 

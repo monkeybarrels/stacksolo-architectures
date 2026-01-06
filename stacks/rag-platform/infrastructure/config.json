@@ -37,12 +37,24 @@
             "framework": "react",
             "buildCommand": "npm run build",
             "outputDir": "dist"
+          },
+          {
+            "name": "admin",
+            "framework": "react",
+            "buildCommand": "npm run build",
+            "outputDir": "dist",
+            "iap": {
+              "enabled": true,
+              "oauth2ClientId": "{{adminOauthClientId}}",
+              "oauth2ClientSecret": "{{adminOauthClientSecret}}"
+            }
           }
         ],
         "loadBalancer": {
           "name": "gateway",
           "routes": [
             { "path": "/api/*", "backend": "api" },
+            { "path": "/admin/*", "backend": "admin" },
             { "path": "/*", "backend": "chat" }
           ]
         }

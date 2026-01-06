@@ -2,7 +2,7 @@
   "id": "rag-platform",
   "name": "RAG Platform",
   "description": "AI chatbot with knowledge base, admin dashboard, and extensible tools",
-  "version": "0.1.0",
+  "version": "0.3.0",
   "tags": ["ai", "chatbot", "rag", "vertex-ai"],
   "difficulty": "intermediate",
   "variables": {
@@ -17,6 +17,14 @@
     "region": {
       "description": "GCP region for deployment",
       "default": "us-central1"
+    },
+    "adminOauthClientId": {
+      "description": "OAuth2 client ID for admin IAP (optional, for production)",
+      "required": false
+    },
+    "adminOauthClientSecret": {
+      "description": "OAuth2 client secret for admin IAP (optional, for production)",
+      "required": false
     }
   }
 }

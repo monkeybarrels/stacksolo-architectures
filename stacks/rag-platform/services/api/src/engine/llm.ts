@@ -9,22 +9,6 @@ const MODEL = 'gemini-1.5-flash';
 const BASE_SYSTEM_PROMPT = `You are a helpful AI assistant. Answer questions clearly and concisely.
 If you don't know something, say so. Be friendly and professional.`;
 
-// System prompt for RAG mode
-const RAG_SYSTEM_PROMPT = `You are a helpful AI assistant that answers questions based on provided context.
-
-INSTRUCTIONS:
-- Answer the user's question using ONLY the information from the provided context
-- If the context doesn't contain enough information to answer, say so clearly
-- When citing information, reference the source document name
-- Be concise and accurate
-- Do not make up information not present in the context
-
-CONTEXT FROM DOCUMENTS:
-{context}
-
----
-Answer the user's question based on the above context.`;
-
 let vertexAI: VertexAI | null = null;
 
 function getVertexAI(): VertexAI {
@@ -55,13 +39,13 @@ function formatContext(sources: SearchResult[]): string {
 /**
  * Generate response without RAG context
  */
-export async function generateResponse(userMessage: string): Promise<string> {
+export async function generateResponse(userMessage: string, customSystemPrompt?: string): Promise<string> {
   const vertex = getVertexAI();
   const model = vertex.getGenerativeModel({ model: MODEL });
 
   const chat = model.startChat({
     history: [],
-    systemInstruction: BASE_SYSTEM_PROMPT,
+    systemInstruction: customSystemPrompt || BASE_SYSTEM_PROMPT,
   });
 
   const result = await chat.sendMessage(userMessage);
@@ -77,17 +61,32 @@ export async function generateResponse(userMessage: string): Promise<string> {
 }
 
 /**
+ * Build RAG system prompt with context
+ */
+function buildRAGPrompt(basePrompt: string, context: string): string {
+  return `${basePrompt}
+
+CONTEXT FROM DOCUMENTS:
+${context}
+
+---
+Answer the user's question based on the above context. If the context doesn't contain enough information, say so clearly.`;
+}
+
+/**
  * Generate response with RAG context
  */
 export async function generateRAGResponse(
   userMessage: string,
-  context: RAGContext
+  context: RAGContext,
+  customSystemPrompt?: string
 ): Promise<string> {
   const vertex = getVertexAI();
   const model = vertex.getGenerativeModel({ model: MODEL });
 
   const contextText = formatContext(context.sources);
-  const systemPrompt = RAG_SYSTEM_PROMPT.replace('{context}', contextText);
+  const basePrompt = customSystemPrompt || BASE_SYSTEM_PROMPT;
+  const systemPrompt = buildRAGPrompt(basePrompt, contextText);
 
   const chat = model.startChat({
     history: [],
@@ -111,13 +110,15 @@ export async function generateRAGResponse(
  */
 export async function* generateRAGResponseStream(
   userMessage: string,
-  context: RAGContext
+  context: RAGContext,
+  customSystemPrompt?: string
 ): AsyncGenerator<string, void, unknown> {
   const vertex = getVertexAI();
   const model = vertex.getGenerativeModel({ model: MODEL });
 
   const contextText = formatContext(context.sources);
-  const systemPrompt = RAG_SYSTEM_PROMPT.replace('{context}', contextText);
+  const basePrompt = customSystemPrompt || BASE_SYSTEM_PROMPT;
+  const systemPrompt = buildRAGPrompt(basePrompt, contextText);
 
   const chat = model.startChat({
     history: [],
@@ -138,14 +139,15 @@ export async function* generateRAGResponseStream(
  * Generate streaming response without RAG context
  */
 export async function* generateResponseStream(
-  userMessage: string
+  userMessage: string,
+  customSystemPrompt?: string
 ): AsyncGenerator<string, void, unknown> {
   const vertex = getVertexAI();
   const model = vertex.getGenerativeModel({ model: MODEL });
 
   const chat = model.startChat({
     history: [],
-    systemInstruction: BASE_SYSTEM_PROMPT,
+    systemInstruction: customSystemPrompt || BASE_SYSTEM_PROMPT,
   });
 
   const streamingResult = await chat.sendMessageStream(userMessage);

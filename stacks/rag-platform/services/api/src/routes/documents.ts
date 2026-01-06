@@ -1,5 +1,5 @@
 import { Router } from 'express';
-import { kernel, downloadFile } from '@stacksolo/runtime';
+import { kernel } from '@stacksolo/runtime';
 import { generateEmbeddings } from '../engine/embeddings';
 import { chunkText } from '../engine/chunker';
 import {
@@ -10,10 +10,9 @@ import {
   deleteDocumentAndChunks,
   updateDocumentStatus,
 } from '../engine/vectorstore';
+import { getBot } from '../engine/bots';
 
 export const documentsRouter = Router();
-
-const BUCKET = process.env.DOCUMENTS_BUCKET || '';
 
 /**
  * Extract text from document based on content type
@@ -35,22 +34,30 @@ function extractText(content: Buffer, contentType: string): string {
   return content.toString('utf-8');
 }
 
-// POST /api/documents/upload-url - Get signed URL for upload
-documentsRouter.post('/documents/upload-url', async (req, res) => {
+// POST /api/bots/:botId/documents/upload-url - Get signed URL for upload
+documentsRouter.post('/bots/:botId/documents/upload-url', async (req, res) => {
   try {
+    const { botId } = req.params;
     const { filename, contentType } = req.body;
+
+    // Verify bot exists
+    const bot = await getBot(botId);
+    if (!bot) {
+      return res.status(404).json({ error: 'Bot not found' });
+    }
 
     if (!filename || !contentType) {
       return res.status(400).json({ error: 'filename and contentType are required' });
     }
 
-    const path = `documents/${Date.now()}-${filename}`;
+    const path = `documents/${botId}/${Date.now()}-${filename}`;
 
     // Get signed upload URL from kernel
     const { uploadUrl } = await kernel.files.getUploadUrl(path, contentType);
 
     // Create document record in pending state
     const document = await saveDocument({
+      botId,
       filename,
       path,
       contentType,
@@ -105,14 +112,14 @@ documentsRouter.post('/documents/:id/process', async (req, res) => {
       // Generate embeddings
       const embeddings = await generateEmbeddings(textChunks);
 
-      // Save chunks with embeddings
+      // Save chunks with embeddings (including botId for filtering)
       const chunks = textChunks.map((content, i) => ({
         content,
         embedding: embeddings[i].embedding,
         tokenCount: embeddings[i].tokenCount,
       }));
 
-      await saveChunks(document.id, chunks);
+      await saveChunks(document.botId, document.id, chunks);
 
       // Update document status and chunk count
       await updateDocumentStatus(document.id, 'ready', {
@@ -123,11 +130,13 @@ documentsRouter.post('/documents/:id/process', async (req, res) => {
       // Publish event for downstream processing
       await kernel.events.publish('document.embedded', {
         documentId: document.id,
+        botId: document.botId,
         chunkCount: textChunks.length,
       });
 
       res.json({
         id: document.id,
+        botId: document.botId,
         status: 'ready',
         chunkCount: textChunks.length,
         message: 'Document processed successfully',
@@ -143,10 +152,30 @@ documentsRouter.post('/documents/:id/process', async (req, res) => {
   }
 });
 
-// GET /api/documents - List all documents
+// GET /api/bots/:botId/documents - List documents for a bot
+documentsRouter.get('/bots/:botId/documents', async (req, res) => {
+  try {
+    const { botId } = req.params;
+
+    // Verify bot exists
+    const bot = await getBot(botId);
+    if (!bot) {
+      return res.status(404).json({ error: 'Bot not found' });
+    }
+
+    const documents = await listDocuments(botId);
+    res.json({ documents });
+  } catch (error) {
+    console.error('List documents error:', error);
+    res.status(500).json({ error: 'Failed to list documents' });
+  }
+});
+
+// GET /api/documents - List all documents (backward compatible)
 documentsRouter.get('/documents', async (req, res) => {
   try {
-    const documents = await listDocuments();
+    const botId = req.query.botId as string | undefined;
+    const documents = await listDocuments(botId);
     res.json({ documents });
   } catch (error) {
     console.error('List documents error:', error);
