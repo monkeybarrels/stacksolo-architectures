@@ -1,7 +1,16 @@
 import { firestore } from '@stacksolo/runtime';
 import { FieldValue } from '@google-cloud/firestore';
+import type { LLMProvider } from './llm-router';
 
 const BOTS_COLLECTION = 'bots';
+
+export interface LLMSettings {
+  provider: LLMProvider;
+  model?: string;
+  apiKey?: string; // Encrypted/stored securely in production
+  temperature?: number;
+  maxTokens?: number;
+}
 
 export interface Bot {
   id: string;
@@ -10,6 +19,8 @@ export interface Bot {
   systemPrompt: string;
   isPublic: boolean;
   createdBy: string;
+  llmSettings?: LLMSettings;
+  toolsEnabled?: boolean;
   createdAt: Date;
   updatedAt: Date;
 }
@@ -20,6 +31,8 @@ export interface CreateBotInput {
   systemPrompt?: string;
   isPublic?: boolean;
   createdBy: string;
+  llmSettings?: LLMSettings;
+  toolsEnabled?: boolean;
 }
 
 export interface UpdateBotInput {
@@ -27,6 +40,8 @@ export interface UpdateBotInput {
   description?: string;
   systemPrompt?: string;
   isPublic?: boolean;
+  llmSettings?: LLMSettings;
+  toolsEnabled?: boolean;
 }
 
 const DEFAULT_SYSTEM_PROMPT = `You are a helpful AI assistant. Answer questions based on the provided context.
@@ -46,6 +61,8 @@ export async function createBot(input: CreateBotInput): Promise<Bot> {
     systemPrompt: input.systemPrompt || DEFAULT_SYSTEM_PROMPT,
     isPublic: input.isPublic ?? false,
     createdBy: input.createdBy,
+    llmSettings: input.llmSettings,
+    toolsEnabled: input.toolsEnabled ?? false,
     createdAt: new Date(),
     updatedAt: new Date(),
   };

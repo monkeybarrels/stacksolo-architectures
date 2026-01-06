@@ -1,0 +1,119 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>RAG Widget Example</title>
+  <style>
+    body {
+      font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif;
+      max-width: 800px;
+      margin: 50px auto;
+      padding: 20px;
+      line-height: 1.6;
+    }
+    h1 { color: #333; }
+    pre {
+      background: #f5f5f5;
+      padding: 20px;
+      border-radius: 8px;
+      overflow-x: auto;
+    }
+    code { font-family: 'Monaco', 'Menlo', monospace; }
+  </style>
+</head>
+<body>
+  <h1>RAG Platform Chat Widget</h1>
+
+  <p>
+    This page demonstrates the embeddable chat widget. Look for the chat button
+    in the bottom-right corner of the screen.
+  </p>
+
+  <h2>Integration</h2>
+  <p>To add the widget to your website, include this code before the closing <code>&lt;/body&gt;</code> tag:</p>
+
+  <pre><code>&lt;script&gt;
+  window.RAGWidgetConfig = {
+    botId: 'YOUR_BOT_ID',
+    apiUrl: 'https://your-api-domain.com',
+
+    // Optional customization
+    position: 'bottom-right',    // or 'bottom-left'
+    theme: 'light',              // or 'dark'
+    title: 'Chat with us',
+    primaryColor: '#4361ee',
+    welcomeMessage: 'Hi! How can I help you today?',
+  };
+&lt;/script&gt;
+&lt;script src="https://your-domain.com/widget.js"&gt;&lt;/script&gt;</code></pre>
+
+  <h2>Configuration Options</h2>
+  <table border="1" cellpadding="10" style="border-collapse: collapse; width: 100%;">
+    <thead>
+      <tr style="background: #f5f5f5;">
+        <th>Option</th>
+        <th>Type</th>
+        <th>Required</th>
+        <th>Description</th>
+      </tr>
+    </thead>
+    <tbody>
+      <tr>
+        <td><code>botId</code></td>
+        <td>string</td>
+        <td>Yes</td>
+        <td>Your bot's unique identifier</td>
+      </tr>
+      <tr>
+        <td><code>apiUrl</code></td>
+        <td>string</td>
+        <td>Yes</td>
+        <td>Base URL of your RAG Platform API</td>
+      </tr>
+      <tr>
+        <td><code>position</code></td>
+        <td>string</td>
+        <td>No</td>
+        <td>'bottom-right' (default) or 'bottom-left'</td>
+      </tr>
+      <tr>
+        <td><code>theme</code></td>
+        <td>string</td>
+        <td>No</td>
+        <td>'light' (default) or 'dark'</td>
+      </tr>
+      <tr>
+        <td><code>title</code></td>
+        <td>string</td>
+        <td>No</td>
+        <td>Header title (default: 'Chat')</td>
+      </tr>
+      <tr>
+        <td><code>primaryColor</code></td>
+        <td>string</td>
+        <td>No</td>
+        <td>Hex color for button/header (default: '#4361ee')</td>
+      </tr>
+      <tr>
+        <td><code>welcomeMessage</code></td>
+        <td>string</td>
+        <td>No</td>
+        <td>First message shown when widget opens</td>
+      </tr>
+    </tbody>
+  </table>
+
+  <!-- Widget integration -->
+  <script>
+    window.RAGWidgetConfig = {
+      botId: 'demo-bot',
+      apiUrl: 'http://localhost:8080',
+      title: 'RAG Assistant',
+      primaryColor: '#4361ee',
+      welcomeMessage: 'Hi! This is a demo. Connect to a real API to chat.',
+    };
+  </script>
+  <script src="dist/widget.js"></script>
+</body>
+</html>

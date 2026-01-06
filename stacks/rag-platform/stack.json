@@ -2,7 +2,7 @@
   "id": "rag-platform",
   "name": "RAG Platform",
   "description": "AI chatbot with knowledge base, admin dashboard, and extensible tools",
-  "version": "0.3.0",
+  "version": "0.4.0",
   "tags": ["ai", "chatbot", "rag", "vertex-ai"],
   "difficulty": "intermediate",
   "variables": {

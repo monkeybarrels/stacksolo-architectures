@@ -3,6 +3,10 @@ import cors from 'cors';
 import { chatRouter } from './routes/chat';
 import { documentsRouter } from './routes/documents';
 import { botsRouter } from './routes/bots';
+import { registerBuiltinTools } from './tools';
+
+// Register built-in tools on startup
+registerBuiltinTools();
 
 const app = express();
 const PORT = process.env.PORT || 8080;
