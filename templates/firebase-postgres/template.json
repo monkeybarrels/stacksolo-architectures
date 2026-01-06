@@ -1,0 +1,36 @@
+{
+  "id": "firebase-postgres",
+  "name": "Firebase + PostgreSQL",
+  "description": "Firebase Auth for authentication, Cloud SQL PostgreSQL for data. Uses Prisma ORM.",
+  "variables": [
+    {
+      "name": "projectName",
+      "description": "Your project name (lowercase, hyphens only)",
+      "type": "string",
+      "required": true
+    },
+    {
+      "name": "gcpProjectId",
+      "description": "Your GCP project ID",
+      "type": "string",
+      "required": true
+    },
+    {
+      "name": "region",
+      "description": "GCP region for deployment",
+      "type": "string",
+      "default": "us-central1"
+    }
+  ],
+  "variants": [
+    {
+      "id": "react",
+      "name": "React",
+      "description": "React with Vite, TypeScript, and React Router",
+      "filesDir": "files-react"
+    }
+  ],
+  "dependencies": [
+    "@stacksolo/runtime"
+  ]
+}

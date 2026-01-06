@@ -18,6 +18,14 @@
     "networks": [
       {
         "name": "main",
+        "sql": [
+          {
+            "name": "db",
+            "databaseVersion": "POSTGRES_15",
+            "tier": "db-f1-micro",
+            "diskSizeGb": 10
+          }
+        ],
         "functions": [
           {
             "name": "api",
@@ -26,6 +34,7 @@
             "memory": "512Mi",
             "env": {
               "NODE_ENV": "production",
+              "DATABASE_URL": "@sql/db.connectionString",
               "KERNEL_URL": "@gcp-kernel/kernel.url",
               "KERNEL_TYPE": "gcp"
             }

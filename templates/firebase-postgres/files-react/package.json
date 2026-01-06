@@ -1,0 +1,17 @@
+{
+  "name": "{{projectName}}",
+  "private": true,
+  "version": "0.0.0",
+  "scripts": {
+    "dev": "concurrently \"npm run dev:api\" \"npm run dev:web\"",
+    "dev:api": "npm run dev --prefix functions/api",
+    "dev:web": "npm run dev --prefix apps/web",
+    "build": "npm run build:api && npm run build:web",
+    "build:api": "npm run build --prefix functions/api",
+    "build:web": "npm run build --prefix apps/web",
+    "migrate": "npm run migrate --prefix functions/api"
+  },
+  "devDependencies": {
+    "concurrently": "^8.2.2"
+  }
+}

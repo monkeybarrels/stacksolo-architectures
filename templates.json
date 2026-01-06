@@ -10,6 +10,14 @@
       "path": "templates/firebase-app"
     },
     {
+      "id": "firebase-postgres",
+      "name": "Firebase + PostgreSQL",
+      "description": "Firebase Auth for authentication, Cloud SQL PostgreSQL for data. Uses Drizzle ORM with repository pattern.",
+      "tags": ["firebase", "auth", "postgresql", "drizzle", "react"],
+      "difficulty": "intermediate",
+      "path": "templates/firebase-postgres"
+    },
+    {
       "id": "api-starter",
       "name": "API Starter",
       "description": "Simple Express API ready to extend",
