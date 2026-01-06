@@ -1,0 +1,21 @@
+{
+  "project": {
+    "name": "{{projectName}}",
+    "gcpProjectId": "{{gcpProjectId}}",
+    "region": "{{region}}",
+    "backend": "gcp",
+    "networks": [
+      {
+        "name": "main",
+        "uis": [
+          {
+            "name": "web",
+            "framework": "react",
+            "buildCommand": "npm run build",
+            "outputDir": "dist"
+          }
+        ]
+      }
+    ]
+  }
+}

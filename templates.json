@@ -5,9 +5,25 @@
       "id": "firebase-app",
       "name": "Firebase App",
       "description": "Full-stack app with Firebase Auth and Firestore",
-      "tags": ["firebase", "auth", "firestore", "react"],
+      "tags": ["firebase", "auth", "firestore", "react", "vue"],
       "difficulty": "beginner",
       "path": "templates/firebase-app"
+    },
+    {
+      "id": "api-starter",
+      "name": "API Starter",
+      "description": "Simple Express API ready to extend",
+      "tags": ["api", "express", "serverless"],
+      "difficulty": "beginner",
+      "path": "templates/api-starter"
+    },
+    {
+      "id": "static-site",
+      "name": "Static Site",
+      "description": "React static site with Vite and CDN deployment",
+      "tags": ["frontend", "react", "static", "cdn"],
+      "difficulty": "beginner",
+      "path": "templates/static-site"
     }
   ]
 }

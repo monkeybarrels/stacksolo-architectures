@@ -1,0 +1,34 @@
+{
+  "id": "api-starter",
+  "name": "API Starter",
+  "description": "Simple Express API ready to extend. Includes health checks, structured routes, and TypeScript.",
+  "variables": [
+    {
+      "name": "projectName",
+      "description": "Your project name (lowercase, hyphens only)",
+      "type": "string",
+      "required": true
+    },
+    {
+      "name": "gcpProjectId",
+      "description": "Your GCP project ID",
+      "type": "string",
+      "required": true
+    },
+    {
+      "name": "region",
+      "description": "GCP region for deployment",
+      "type": "string",
+      "default": "us-central1"
+    }
+  ],
+  "variants": [
+    {
+      "id": "default",
+      "name": "Default",
+      "description": "Express API with TypeScript",
+      "filesDir": "files"
+    }
+  ],
+  "dependencies": []
+}

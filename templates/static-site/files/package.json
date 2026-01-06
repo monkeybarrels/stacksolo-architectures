@@ -1,0 +1,14 @@
+{
+  "name": "{{projectName}}",
+  "private": true,
+  "version": "0.0.0",
+  "scripts": {
+    "dev": "cd apps/web && npm run dev",
+    "build": "cd apps/web && npm run build",
+    "preview": "cd apps/web && npm run preview",
+    "install:all": "npm install && cd apps/web && npm install"
+  },
+  "devDependencies": {
+    "@stacksolo/cli": "^0.1.0"
+  }
+}

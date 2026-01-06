@@ -28,6 +28,12 @@
       "name": "React",
       "description": "React with Vite, TypeScript, and React Router",
       "filesDir": "files-react"
+    },
+    {
+      "id": "vue",
+      "name": "Vue",
+      "description": "Vue 3 with Vite, TypeScript, and Vue Router",
+      "filesDir": "files-vue"
     }
   ],
   "dependencies": [

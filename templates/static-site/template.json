@@ -1,0 +1,34 @@
+{
+  "id": "static-site",
+  "name": "Static Site",
+  "description": "React static site with Vite. Deploys to Cloud Storage with CDN.",
+  "variables": [
+    {
+      "name": "projectName",
+      "description": "Your project name (lowercase, hyphens only)",
+      "type": "string",
+      "required": true
+    },
+    {
+      "name": "gcpProjectId",
+      "description": "Your GCP project ID",
+      "type": "string",
+      "required": true
+    },
+    {
+      "name": "region",
+      "description": "GCP region for deployment",
+      "type": "string",
+      "default": "us-central1"
+    }
+  ],
+  "variants": [
+    {
+      "id": "default",
+      "name": "Default",
+      "description": "React with Vite and TypeScript",
+      "filesDir": "files"
+    }
+  ],
+  "dependencies": []
+}

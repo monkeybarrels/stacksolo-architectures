@@ -1,0 +1,22 @@
+{
+  "project": {
+    "name": "{{projectName}}",
+    "gcpProjectId": "{{gcpProjectId}}",
+    "region": "{{region}}",
+    "backend": "gcp",
+    "networks": [
+      {
+        "name": "main",
+        "functions": [
+          {
+            "name": "api",
+            "runtime": "nodejs20",
+            "entryPoint": "handler",
+            "memory": "256Mi",
+            "allowUnauthenticated": true
+          }
+        ]
+      }
+    ]
+  }
+}
