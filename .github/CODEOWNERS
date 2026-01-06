@@ -1,15 +1,15 @@
 # StackSolo Architectures - Code Owners
 # https://docs.github.com/en/repositories/managing-your-repositorys-settings-and-features/customizing-your-repository/about-code-owners
 
-# Default: MonkeyBarrels org owns everything
-* @monkeybarrels
+# Default: trkbrkr2000 owns everything
+* @trkbrkr2000
 
-# Official architectures - require MonkeyBarrels approval
-/architectures/ @monkeybarrels
+# Official architectures - require trkbrkr2000 approval
+/architectures/ @trkbrkr2000
 
-# Root files (index.json, README) - require MonkeyBarrels approval
-/index.json @monkeybarrels
-/README.md @monkeybarrels
+# Root files (index.json, README) - require trkbrkr2000 approval
+/index.json @trkbrkr2000
+/README.md @trkbrkr2000
 
 # Community folder - no required reviewers (anyone can contribute)
 # Explicitly empty = no code owners required
