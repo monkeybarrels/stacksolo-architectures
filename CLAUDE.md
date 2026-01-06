@@ -25,6 +25,99 @@ Building a complete RAG chatbot platform at `stacks/rag-platform/`.
 
 ---
 
+# CRITICAL: Use StackSolo Runtime
+
+**DO NOT reinvent infrastructure.** StackSolo already provides:
+
+## `@stacksolo/runtime` - Use This!
+
+```typescript
+import {
+  kernel,           // Auth + files + events
+  firestore,        // Auto-configured Firestore
+  uploadFile,       // Direct storage upload
+  downloadFile,     // Direct storage download
+  secrets,          // Secret Manager access
+} from '@stacksolo/runtime';
+
+// Zero-trust auth plugin (registers kernel.access)
+import '@stacksolo/plugin-zero-trust-auth/runtime';
+```
+
+### Auth & Access Control
+
+```typescript
+// Validate Firebase token
+const result = await kernel.validateToken(req.headers.authorization);
+if (result.valid) {
+  console.log('User:', result.uid, result.email);
+}
+
+// Express middleware
+app.use('/api', kernel.authMiddleware());
+
+// Zero-trust access control (after importing plugin)
+const { hasAccess } = await kernel.access.check('admin-dashboard', userEmail, 'read');
+await kernel.access.grant('admin-dashboard', 'bob@example.com', ['read', 'write'], currentUser);
+await kernel.access.revoke('admin-dashboard', 'bob@example.com', currentUser);
+
+// Express middleware for IAP-protected routes
+app.get('/admin', kernel.access.requireAccess('admin-dashboard', 'read'), handler);
+```
+
+### File Operations
+
+```typescript
+// Signed URLs for client-side upload/download
+const { uploadUrl } = await kernel.files.getUploadUrl('docs/file.pdf', 'application/pdf');
+const { downloadUrl } = await kernel.files.getDownloadUrl('docs/file.pdf');
+
+// List, delete, move
+const { files } = await kernel.files.list({ prefix: 'docs/' });
+await kernel.files.delete('docs/old.pdf');
+await kernel.files.move('temp/file.pdf', 'docs/file.pdf');
+
+// Direct storage (server-side)
+const url = await uploadFile(bucket, 'path/to/file', buffer, { contentType: 'application/pdf' });
+const data = await downloadFile(bucket, 'path/to/file');
+```
+
+### Events (Pub/Sub)
+
+```typescript
+// Publish events
+await kernel.events.publish('document.ingested', { docId: '123', botId: 'abc' });
+
+// Subscribe (containers)
+const sub = await kernel.events.subscribe('document.*', (event) => {
+  console.log('Event:', event.type, event.data);
+});
+
+// HTTP push (serverless)
+await kernel.events.registerSubscription({
+  pattern: 'document.ingested',
+  endpoint: 'https://my-function.run.app/events',
+  serviceName: 'embeddings-worker',
+});
+```
+
+### Firestore
+
+```typescript
+const db = firestore();
+const doc = await db.collection('bots').doc(botId).get();
+await db.collection('conversations').add({ ... });
+```
+
+### Secrets
+
+```typescript
+import { requireSecret } from '@stacksolo/runtime';
+const openaiKey = await requireSecret('OPENAI_API_KEY');
+```
+
+---
+
 # RAG Platform Stack Plan
 
 ## Goal
@@ -48,6 +141,8 @@ stacksolo deploy
 # - Admin at yourdomain.com/admin (IAP protected)
 # - API at yourdomain.com/api
 ```
+
+---
 
 ## Architecture
 
@@ -74,16 +169,16 @@ stacksolo deploy
          ┌─────────────────┼─────────────────┐
          │                 │                 │
   ┌──────▼──────┐  ┌───────▼───────┐  ┌──────▼───────┐
-  │  Firestore  │  │ Vector Store  │  │Cloud Storage │
-  │ - Bots      │  │ (pluggable)   │  │ - Documents  │
-  │ - Convos    │  │               │  │              │
-  │ - Access    │  │               │  │              │
+  │  Firestore  │  │ Vector Store  │  │   Kernel     │
+  │ - Bots      │  │ (Firestore    │  │ - Files      │
+  │ - Convos    │  │  vectors)     │  │ - Events     │
+  │ - Docs meta │  │               │  │ - Access     │
   └─────────────┘  └───────────────┘  └──────────────┘
 ```
 
 ---
 
-## Implementation Order (Minimal Vertical Slice)
+## Implementation (Using StackSolo Runtime)
 
 ### v0.1 - Simplest Working Chat (COMPLETE)
 1. Stack structure - `stacks/rag-platform/` with manifest
@@ -92,33 +187,161 @@ stacksolo deploy
 4. Minimal infra config - Cloud Run + static UI
 
 ### v0.2 - Core Features
-5. Document ingestion - `POST /api/documents` with Cloud Storage + embeddings
-6. Vector search - Firestore vector store, RAG retrieval
-7. Streaming responses - SSE for real-time chat
-8. Source citations - Show which docs answered
+
+**Document Ingestion:**
+```typescript
+// POST /api/documents - Use kernel.files!
+import { kernel, firestore } from '@stacksolo/runtime';
+
+const { uploadUrl, path } = await kernel.files.getUploadUrl(
+  `documents/${botId}/${filename}`,
+  contentType
+);
+
+await firestore().collection('documents').add({
+  botId, path, filename, status: 'pending', createdAt: new Date(),
+});
+
+// Publish for async embedding
+await kernel.events.publish('document.uploaded', { docId, botId, path });
+```
+
+**Embedding Worker:**
+```typescript
+// Use kernel.events for subscription
+await kernel.events.registerSubscription({
+  pattern: 'document.uploaded',
+  endpoint: `${process.env.SERVICE_URL}/events/embed`,
+});
+
+// Handler downloads via kernel.files
+const { downloadUrl } = await kernel.files.getDownloadUrl(path);
+const file = await fetch(downloadUrl);
+const chunks = chunkDocument(file);
+const embeddings = await generateEmbeddings(chunks);
+await storeVectors(embeddings);
+await kernel.events.publish('document.embedded', { docId });
+```
+
+**Vector Search (Firestore):**
+```typescript
+// Native Firestore vector search
+const db = firestore();
+const results = await db.collection('embeddings')
+  .where('botId', '==', botId)
+  .findNearest('embedding', queryVector, { limit: 5 });
+```
 
 ### v0.3 - Multi-bot + Admin
-9. Bot CRUD - Multiple bots with different knowledge bases
-10. Admin Dashboard - Bot management, document upload (file drop zone)
-11. IAP protection - Zero-trust admin access
-12. Conversation history - Per-user, per-bot
+
+**IAP Admin with kernel.access:**
+```typescript
+import '@stacksolo/plugin-zero-trust-auth/runtime';
+
+// Protect all admin routes
+app.use('/admin/api', kernel.access.requireAccess('admin-dashboard', 'read'));
+
+// Grant access
+app.post('/admin/api/invite',
+  kernel.access.requireAccess('admin-dashboard', 'admin'),
+  async (req, res) => {
+    await kernel.access.grant('admin-dashboard', req.body.email, ['read'], req.user.email);
+  }
+);
+```
+
+**Authenticated Conversations:**
+```typescript
+// Use kernel.validateToken for auth
+const user = await kernel.validateToken(token);
+await firestore().collection('conversations').add({
+  botId, userId: user.uid, userEmail: user.email, messages: [], createdAt: new Date(),
+});
+```
 
 ### v0.4 - Extensibility
-13. Tool system SDK - `createTool` helper + registry
-14. LLM router - OpenAI/Anthropic BYOK options
-15. Widget embed - `widget.js` for drop-in integration
-16. Stack CLI commands - `stacksolo stack create`, `stack list`
 
-### v0.5 - Polish
-17. Vector store abstraction - pgvector/Pinecone options
-18. Feedback system - Thumbs up/down
-19. `stack add-tool` scaffold - Generate tool boilerplate
+**BYOK with secrets:**
+```typescript
+import { requireSecret } from '@stacksolo/runtime';
+const openaiKey = await requireSecret('OPENAI_API_KEY');
+```
+
+---
+
+## Config Example
+
+```json
+{
+  "project": {
+    "name": "rag-platform",
+    "gcpProjectId": "{{gcpProjectId}}",
+    "region": "{{region}}",
+    "plugins": [
+      "@stacksolo/plugin-gcp-cdktf",
+      "@stacksolo/plugin-gcp-kernel",
+      "@stacksolo/plugin-zero-trust"
+    ],
+    "gcpKernel": {
+      "name": "kernel",
+      "firebaseProjectId": "{{gcpProjectId}}"
+    },
+    "zeroTrustAuth": {
+      "iapClientId": "{{iapClientId}}",
+      "allowedUsers": ["{{adminEmail}}"]
+    },
+    "buckets": [
+      { "name": "{{projectName}}-documents" }
+    ],
+    "networks": [{
+      "name": "main",
+      "containers": [
+        {
+          "name": "api",
+          "port": 8080,
+          "env": {
+            "DOCUMENTS_BUCKET": "@bucket/{{projectName}}-documents.name"
+          }
+        },
+        {
+          "name": "admin",
+          "port": 3000,
+          "iap": true
+        }
+      ],
+      "uis": [
+        { "name": "chat", "framework": "react" }
+      ],
+      "loadBalancer": {
+        "name": "gateway",
+        "routes": [
+          { "path": "/api/*", "backend": "api" },
+          { "path": "/admin/*", "backend": "admin", "iap": true },
+          { "path": "/*", "backend": "chat" }
+        ]
+      }
+    }]
+  }
+}
+```
+
+Note: `KERNEL_URL` is automatically injected when `gcpKernel` is configured.
+
+---
+
+## Design Decisions
+
+1. **Use `@stacksolo/runtime`** - Auth, files, events are already built
+2. **Use `kernel.access`** - Zero-trust admin with IAP, no custom auth
+3. **Use `kernel.files`** - Signed URLs for uploads, no direct GCS SDK
+4. **Use `kernel.events`** - Pub/sub for async processing (embeddings)
+5. **Use `firestore()`** - Auto-configured, works with emulator in dev
+6. **Use `secrets`** - Store BYOK API keys in Secret Manager
 
 ---
 
 ## Key Files
 
-### Stack Structure
 | Path | Purpose |
 |------|---------|
 | `stacks/rag-platform/stack.json` | Stack manifest |
@@ -126,49 +349,9 @@ stacksolo deploy
 | `stacks/rag-platform/services/api/` | RAG Engine API |
 | `stacks/rag-platform/apps/chat/` | Chat UI |
 
-### API Routes (planned)
-| Endpoint | Description |
-|----------|-------------|
-| `POST /api/chat` | Send message, get response |
-| `POST /api/documents` | Ingest document |
-| `GET /api/documents` | List documents |
-| `DELETE /api/documents/:id` | Delete document |
-| `GET /api/bots` | List bots |
-| `POST /api/bots` | Create bot |
-| `GET /api/conversations` | List conversations |
-
-### Tool System (planned)
-```typescript
-import { createTool } from '@rag-platform/sdk';
-
-export const myTool = createTool({
-  name: 'my_tool',
-  description: 'What this tool does',
-  parameters: {
-    query: { type: 'string', required: true },
-  },
-  handler: async ({ query }, context) => {
-    return `Result for: ${query}`;
-  },
-});
-```
-
----
-
-## Design Decisions
-
-1. **Stacks in architectures repo** - Keeps all patterns in one place
-2. **Tool system is SDK-first** - `createTool` makes extension dead simple
-3. **Vector store abstraction** - Start with Firestore, swap later
-4. **IAP for admin** - Zero-trust built-in, no custom auth needed
-5. **Widget.js for embedding** - Drop-in integration for any site
-6. **Streaming responses** - SSE for real-time chat experience
-
 ---
 
 ## Bigger Vision: StackSolo Builder
-
-The RAG Platform Stack proves a larger model:
 
 **"Build AI apps visually. Own everything."**
 
@@ -177,8 +360,6 @@ Unlike Bolt/Bubble/Vercel:
 - No runtime fees (pay GCP directly, scales to zero)
 - Full customization (fork, extend, modify anything)
 - MCP-native (AI assistants help you build)
-
-### Roadmap
 
 | Phase | Deliverable |
 |-------|-------------|
