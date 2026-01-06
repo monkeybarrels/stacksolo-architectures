@@ -1,6 +1,7 @@
 import express from 'express';
 import cors from 'cors';
 import { chatRouter } from './routes/chat';
+import { documentsRouter } from './routes/documents';
 
 const app = express();
 const PORT = process.env.PORT || 8080;
@@ -13,8 +14,9 @@ app.get('/health', (req, res) => {
   res.json({ status: 'ok' });
 });
 
-// Chat API routes
+// API routes
 app.use('/api', chatRouter);
+app.use('/api', documentsRouter);
 
 app.listen(PORT, () => {
   console.log(`RAG Platform API running on port ${PORT}`);

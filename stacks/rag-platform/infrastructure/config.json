@@ -5,7 +5,15 @@
     "region": "{{region}}",
     "backend": "gcp",
     "plugins": [
-      "@stacksolo/plugin-gcp-cdktf"
+      "@stacksolo/plugin-gcp-cdktf",
+      "@stacksolo/plugin-gcp-kernel"
+    ],
+    "gcpKernel": {
+      "name": "kernel",
+      "firebaseProjectId": "{{gcpProjectId}}"
+    },
+    "buckets": [
+      { "name": "{{projectName}}-documents" }
     ],
     "networks": [
       {
@@ -17,7 +25,9 @@
             "allowUnauthenticated": true,
             "env": {
               "NODE_ENV": "production",
-              "GCP_PROJECT_ID": "{{gcpProjectId}}"
+              "GCP_PROJECT_ID": "{{gcpProjectId}}",
+              "GCP_REGION": "{{region}}",
+              "DOCUMENTS_BUCKET": "@bucket/{{projectName}}-documents.name"
             }
           }
         ],
