@@ -1,0 +1,26 @@
+{
+  "project.name": {
+    "description": "Your project name (used for resource naming)",
+    "default": "my-api",
+    "required": true
+  },
+  "project.gcpProjectId": {
+    "description": "Your GCP project ID",
+    "required": true
+  },
+  "project.region": {
+    "description": "GCP region for deployment",
+    "default": "us-central1",
+    "required": false
+  },
+  "redis.memorySizeGb": {
+    "description": "Redis memory size in GB (1-300)",
+    "default": "1",
+    "required": false
+  },
+  "redis.tier": {
+    "description": "Redis tier: BASIC (single node) or STANDARD_HA (high availability)",
+    "default": "BASIC",
+    "required": false
+  }
+}

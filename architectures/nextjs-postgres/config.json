@@ -1,0 +1,36 @@
+{
+  "project": {
+    "name": "my-nextjs-app",
+    "gcpProjectId": "YOUR_GCP_PROJECT_ID",
+    "region": "us-central1",
+    "networks": [
+      {
+        "name": "main",
+        "containers": [
+          {
+            "name": "web",
+            "port": 3000,
+            "allowUnauthenticated": true,
+            "env": {
+              "DATABASE_URL": "@sql/db.connectionString",
+              "NODE_ENV": "production"
+            }
+          }
+        ],
+        "sql": [
+          {
+            "name": "db",
+            "databaseVersion": "POSTGRES_15",
+            "tier": "db-f1-micro"
+          }
+        ],
+        "loadBalancer": {
+          "name": "gateway",
+          "routes": [
+            { "path": "/*", "backend": "web" }
+          ]
+        }
+      }
+    ]
+  }
+}

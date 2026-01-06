@@ -1,0 +1,36 @@
+{
+  "project": {
+    "name": "my-api",
+    "gcpProjectId": "YOUR_GCP_PROJECT_ID",
+    "region": "us-central1",
+    "networks": [
+      {
+        "name": "main",
+        "containers": [
+          {
+            "name": "api",
+            "port": 8080,
+            "allowUnauthenticated": true,
+            "env": {
+              "REDIS_URL": "@redis/cache.url",
+              "NODE_ENV": "production"
+            }
+          }
+        ],
+        "redis": [
+          {
+            "name": "cache",
+            "tier": "BASIC",
+            "memorySizeGb": 1
+          }
+        ],
+        "loadBalancer": {
+          "name": "gateway",
+          "routes": [
+            { "path": "/*", "backend": "api" }
+          ]
+        }
+      }
+    ]
+  }
+}

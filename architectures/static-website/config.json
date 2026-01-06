@@ -1,0 +1,25 @@
+{
+  "project": {
+    "name": "my-website",
+    "gcpProjectId": "YOUR_GCP_PROJECT_ID",
+    "region": "us-central1",
+    "networks": [
+      {
+        "name": "main",
+        "uis": [
+          {
+            "name": "web",
+            "buildCommand": "npm run build",
+            "outputDir": "dist"
+          }
+        ],
+        "loadBalancer": {
+          "name": "gateway",
+          "routes": [
+            { "path": "/*", "backend": "web" }
+          ]
+        }
+      }
+    ]
+  }
+}

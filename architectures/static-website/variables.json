@@ -1,0 +1,26 @@
+{
+  "project.name": {
+    "description": "Your project name (used for resource naming)",
+    "default": "my-website",
+    "required": true
+  },
+  "project.gcpProjectId": {
+    "description": "Your GCP project ID",
+    "required": true
+  },
+  "project.region": {
+    "description": "GCP region for deployment",
+    "default": "us-central1",
+    "required": false
+  },
+  "ui.buildCommand": {
+    "description": "Command to build your static site",
+    "default": "npm run build",
+    "required": false
+  },
+  "ui.outputDir": {
+    "description": "Directory containing built static files",
+    "default": "dist",
+    "required": false
+  }
+}

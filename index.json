@@ -1,0 +1,29 @@
+{
+  "version": "1.0.0",
+  "architectures": [
+    {
+      "id": "nextjs-postgres",
+      "name": "Next.js with PostgreSQL",
+      "description": "Full-stack Next.js app with Cloud SQL PostgreSQL database",
+      "tags": ["frontend", "backend", "database", "full-stack"],
+      "difficulty": "beginner",
+      "path": "architectures/nextjs-postgres"
+    },
+    {
+      "id": "api-with-redis",
+      "name": "API with Redis Cache",
+      "description": "Node.js API with Redis caching for high-performance endpoints",
+      "tags": ["api", "cache", "backend"],
+      "difficulty": "intermediate",
+      "path": "architectures/api-with-redis"
+    },
+    {
+      "id": "static-website",
+      "name": "Static Website",
+      "description": "Simple static website hosted on Cloud Storage with CDN",
+      "tags": ["frontend", "static", "cdn"],
+      "difficulty": "beginner",
+      "path": "architectures/static-website"
+    }
+  ]
+}
