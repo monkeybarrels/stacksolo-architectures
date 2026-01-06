@@ -1,0 +1,13 @@
+{
+  "version": "1",
+  "templates": [
+    {
+      "id": "firebase-app",
+      "name": "Firebase App",
+      "description": "Full-stack app with Firebase Auth and Firestore",
+      "tags": ["firebase", "auth", "firestore", "react"],
+      "difficulty": "beginner",
+      "path": "templates/firebase-app"
+    }
+  ]
+}

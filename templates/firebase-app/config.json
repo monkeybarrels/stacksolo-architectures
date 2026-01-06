@@ -1,0 +1,42 @@
+{
+  "project": {
+    "name": "{{projectName}}",
+    "gcpProjectId": "{{gcpProjectId}}",
+    "region": "{{region}}",
+    "backend": "k8s",
+    "firebaseEmulators": {
+      "enabled": true
+    },
+    "networks": [
+      {
+        "name": "main",
+        "functions": [
+          {
+            "name": "api",
+            "runtime": "nodejs20",
+            "entryPoint": "handler",
+            "memory": "512Mi",
+            "env": {
+              "NODE_ENV": "production"
+            }
+          }
+        ],
+        "uis": [
+          {
+            "name": "web",
+            "framework": "react",
+            "buildCommand": "npm run build",
+            "outputDir": "dist"
+          }
+        ],
+        "loadBalancer": {
+          "name": "gateway",
+          "routes": [
+            { "path": "/api/*", "backend": "api" },
+            { "path": "/*", "backend": "web" }
+          ]
+        }
+      }
+    ]
+  }
+}
