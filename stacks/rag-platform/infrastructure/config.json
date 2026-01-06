@@ -1,0 +1,42 @@
+{
+  "project": {
+    "name": "{{projectName}}",
+    "gcpProjectId": "{{gcpProjectId}}",
+    "region": "{{region}}",
+    "backend": "gcp",
+    "plugins": [
+      "@stacksolo/plugin-gcp-cdktf"
+    ],
+    "networks": [
+      {
+        "name": "main",
+        "containers": [
+          {
+            "name": "api",
+            "port": 8080,
+            "allowUnauthenticated": true,
+            "env": {
+              "NODE_ENV": "production",
+              "GCP_PROJECT_ID": "{{gcpProjectId}}"
+            }
+          }
+        ],
+        "uis": [
+          {
+            "name": "chat",
+            "framework": "react",
+            "buildCommand": "npm run build",
+            "outputDir": "dist"
+          }
+        ],
+        "loadBalancer": {
+          "name": "gateway",
+          "routes": [
+            { "path": "/api/*", "backend": "api" },
+            { "path": "/*", "backend": "chat" }
+          ]
+        }
+      }
+    ]
+  }
+}

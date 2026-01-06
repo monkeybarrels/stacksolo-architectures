@@ -1,0 +1,13 @@
+{
+  "version": "1",
+  "stacks": [
+    {
+      "id": "rag-platform",
+      "name": "RAG Platform",
+      "description": "AI chatbot with knowledge base, admin dashboard, and extensible tools",
+      "tags": ["ai", "chatbot", "rag", "vertex-ai"],
+      "difficulty": "intermediate",
+      "path": "stacks/rag-platform"
+    }
+  ]
+}
