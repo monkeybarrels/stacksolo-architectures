@@ -6,9 +6,7 @@ import { botsRouter } from './routes/bots';
 import { feedbackRouter } from './routes/feedback';
 import { registerBuiltinTools } from './tools';
 import { rateLimitPresets } from './middleware';
-
-// Register built-in tools on startup
-registerBuiltinTools();
+import { initDb } from './lib/db';
 
 const app = express();
 const PORT = process.env.PORT || 8080;
@@ -20,7 +18,7 @@ app.use(express.json());
 app.use('/api', rateLimitPresets.standard);
 
 // Health check (no rate limit)
-app.get('/health', (req, res) => {
+app.get('/health', (_req, res) => {
   res.json({ status: 'ok' });
 });
 
@@ -30,8 +28,22 @@ app.use('/api', chatRouter);
 app.use('/api', documentsRouter);
 app.use('/api', feedbackRouter);
 
-app.listen(PORT, () => {
-  console.log(`RAG Platform API running on port ${PORT}`);
+// Initialize and start server
+async function start() {
+  // Initialize database connection
+  await initDb();
+
+  // Register built-in tools
+  registerBuiltinTools();
+
+  app.listen(PORT, () => {
+    console.log(`RAG Platform API running on port ${PORT}`);
+  });
+}
+
+start().catch((err) => {
+  console.error('Failed to start server:', err);
+  process.exit(1);
 });
 
 export { app };

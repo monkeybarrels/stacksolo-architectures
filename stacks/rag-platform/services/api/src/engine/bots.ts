@@ -1,5 +1,5 @@
-import { firestore } from '@stacksolo/runtime';
 import { FieldValue } from '@google-cloud/firestore';
+import { getDb } from '../lib/db';
 import type { LLMProvider } from './llm-router';
 
 const BOTS_COLLECTION = 'bots';
@@ -51,7 +51,7 @@ If you don't have enough information to answer, say so clearly.`;
  * Create a new bot
  */
 export async function createBot(input: CreateBotInput): Promise<Bot> {
-  const db = firestore();
+  const db = getDb();
   const docRef = db.collection(BOTS_COLLECTION).doc();
 
   const bot: Bot = {
@@ -80,7 +80,7 @@ export async function createBot(input: CreateBotInput): Promise<Bot> {
  * Get bot by ID
  */
 export async function getBot(id: string): Promise<Bot | null> {
-  const db = firestore();
+  const db = getDb();
   const doc = await db.collection(BOTS_COLLECTION).doc(id).get();
 
   if (!doc.exists) {
@@ -100,7 +100,7 @@ export async function getBot(id: string): Promise<Bot | null> {
  * List all bots (optionally filter by creator or public)
  */
 export async function listBots(options?: { createdBy?: string; includePublic?: boolean }): Promise<Bot[]> {
-  const db = firestore();
+  const db = getDb();
   let query = db.collection(BOTS_COLLECTION).orderBy('createdAt', 'desc');
 
   const snapshot = await query.get();
@@ -129,7 +129,7 @@ export async function listBots(options?: { createdBy?: string; includePublic?: b
  * Update bot
  */
 export async function updateBot(id: string, input: UpdateBotInput): Promise<Bot | null> {
-  const db = firestore();
+  const db = getDb();
   const docRef = db.collection(BOTS_COLLECTION).doc(id);
 
   const doc = await docRef.get();
@@ -149,7 +149,7 @@ export async function updateBot(id: string, input: UpdateBotInput): Promise<Bot 
  * Delete bot
  */
 export async function deleteBot(id: string): Promise<boolean> {
-  const db = firestore();
+  const db = getDb();
   const docRef = db.collection(BOTS_COLLECTION).doc(id);
 
   const doc = await docRef.get();

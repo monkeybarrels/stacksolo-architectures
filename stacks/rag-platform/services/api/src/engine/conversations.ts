@@ -1,5 +1,5 @@
-import { firestore } from '@stacksolo/runtime';
 import { FieldValue } from '@google-cloud/firestore';
+import { getDb } from '../lib/db';
 
 const CONVERSATIONS_COLLECTION = 'conversations';
 
@@ -35,7 +35,7 @@ export async function createConversation(
   userEmail?: string,
   title?: string
 ): Promise<Conversation> {
-  const db = firestore();
+  const db = getDb();
   const docRef = db.collection(CONVERSATIONS_COLLECTION).doc();
 
   const conversation: Conversation = {
@@ -62,7 +62,7 @@ export async function createConversation(
  * Get conversation by ID
  */
 export async function getConversation(id: string): Promise<Conversation | null> {
-  const db = firestore();
+  const db = getDb();
   const doc = await db.collection(CONVERSATIONS_COLLECTION).doc(id).get();
 
   if (!doc.exists) {
@@ -89,7 +89,7 @@ export async function listConversations(
   botId: string,
   userId: string
 ): Promise<Conversation[]> {
-  const db = firestore();
+  const db = getDb();
   const snapshot = await db
     .collection(CONVERSATIONS_COLLECTION)
     .where('botId', '==', botId)
@@ -120,7 +120,7 @@ export async function addMessage(
   conversationId: string,
   message: Omit<Message, 'timestamp'>
 ): Promise<void> {
-  const db = firestore();
+  const db = getDb();
   const docRef = db.collection(CONVERSATIONS_COLLECTION).doc(conversationId);
 
   const messageWithTimestamp: Message = {
@@ -141,7 +141,7 @@ export async function updateConversationTitle(
   conversationId: string,
   title: string
 ): Promise<void> {
-  const db = firestore();
+  const db = getDb();
   await db.collection(CONVERSATIONS_COLLECTION).doc(conversationId).update({
     title,
     updatedAt: FieldValue.serverTimestamp(),
@@ -152,6 +152,6 @@ export async function updateConversationTitle(
  * Delete conversation
  */
 export async function deleteConversation(conversationId: string): Promise<void> {
-  const db = firestore();
+  const db = getDb();
   await db.collection(CONVERSATIONS_COLLECTION).doc(conversationId).delete();
 }

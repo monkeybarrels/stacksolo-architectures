@@ -4,15 +4,15 @@
  * Uses Firestore's native vector search capability.
  */
 
-import { firestore } from '@stacksolo/runtime';
 import { FieldValue, VectorQuery, VectorQuerySnapshot } from '@google-cloud/firestore';
+import { getDb } from '../../lib/db';
 import type { VectorStore, VectorDocument, VectorSearchResult } from './types';
 
 const VECTORS_COLLECTION = 'vectors';
 
 export class FirestoreVectorStore implements VectorStore {
   async upsert(vectors: VectorDocument[]): Promise<void> {
-    const db = firestore();
+    const db = getDb();
     const batch = db.batch();
 
     for (const vec of vectors) {
@@ -35,7 +35,7 @@ export class FirestoreVectorStore implements VectorStore {
     queryEmbedding: number[],
     limit: number = 5
   ): Promise<VectorSearchResult[]> {
-    const db = firestore();
+    const db = getDb();
 
     const vectorQuery: VectorQuery = db
       .collection(VECTORS_COLLECTION)
@@ -60,7 +60,7 @@ export class FirestoreVectorStore implements VectorStore {
   }
 
   async deleteByDocumentId(documentId: string): Promise<void> {
-    const db = firestore();
+    const db = getDb();
     const snapshot = await db
       .collection(VECTORS_COLLECTION)
       .where('documentId', '==', documentId)
@@ -72,7 +72,7 @@ export class FirestoreVectorStore implements VectorStore {
   }
 
   async deleteByBotId(botId: string): Promise<void> {
-    const db = firestore();
+    const db = getDb();
     const snapshot = await db
       .collection(VECTORS_COLLECTION)
       .where('botId', '==', botId)

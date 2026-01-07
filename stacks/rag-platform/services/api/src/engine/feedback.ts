@@ -5,8 +5,8 @@
  * This data can be used to improve the system over time.
  */
 
-import { firestore } from '@stacksolo/runtime';
 import { FieldValue } from '@google-cloud/firestore';
+import { getDb } from '../lib/db';
 
 const FEEDBACK_COLLECTION = 'feedback';
 
@@ -48,7 +48,7 @@ export interface FeedbackStats {
  * Submit feedback for a response
  */
 export async function submitFeedback(input: CreateFeedbackInput): Promise<Feedback> {
-  const db = firestore();
+  const db = getDb();
   const docRef = db.collection(FEEDBACK_COLLECTION).doc();
 
   const feedback: Feedback = {
@@ -69,7 +69,7 @@ export async function submitFeedback(input: CreateFeedbackInput): Promise<Feedba
  * Get feedback by message ID
  */
 export async function getFeedbackByMessageId(messageId: string): Promise<Feedback | null> {
-  const db = firestore();
+  const db = getDb();
   const snapshot = await db
     .collection(FEEDBACK_COLLECTION)
     .where('messageId', '==', messageId)
@@ -96,7 +96,7 @@ export async function updateFeedback(
   feedbackId: string,
   updates: { type?: FeedbackType; comment?: string }
 ): Promise<void> {
-  const db = firestore();
+  const db = getDb();
   await db.collection(FEEDBACK_COLLECTION).doc(feedbackId).update({
     ...updates,
     updatedAt: FieldValue.serverTimestamp(),
@@ -107,7 +107,7 @@ export async function updateFeedback(
  * Get feedback stats for a bot
  */
 export async function getFeedbackStats(botId: string): Promise<FeedbackStats> {
-  const db = firestore();
+  const db = getDb();
 
   const [positiveSnapshot, negativeSnapshot] = await Promise.all([
     db
@@ -142,7 +142,7 @@ export async function listFeedback(
   botId: string,
   options?: { limit?: number; type?: FeedbackType }
 ): Promise<Feedback[]> {
-  const db = firestore();
+  const db = getDb();
   let query = db
     .collection(FEEDBACK_COLLECTION)
     .where('botId', '==', botId)
@@ -176,7 +176,7 @@ export async function listFeedback(
  * Delete all feedback for a bot
  */
 export async function deleteFeedbackByBotId(botId: string): Promise<void> {
-  const db = firestore();
+  const db = getDb();
   const snapshot = await db.collection(FEEDBACK_COLLECTION).where('botId', '==', botId).get();
 
   const batch = db.batch();

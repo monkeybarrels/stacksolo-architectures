@@ -1,5 +1,5 @@
-import { firestore } from '@stacksolo/runtime';
 import { FieldValue, VectorQuery, VectorQuerySnapshot } from '@google-cloud/firestore';
+import { getDb } from '../lib/db';
 
 // Collections
 const DOCUMENTS_COLLECTION = 'documents';
@@ -39,7 +39,7 @@ export interface SearchResult {
  * Save document metadata
  */
 export async function saveDocument(doc: Omit<Document, 'id' | 'createdAt' | 'updatedAt'>): Promise<Document> {
-  const db = firestore();
+  const db = getDb();
   const docRef = db.collection(DOCUMENTS_COLLECTION).doc();
 
   const document: Document = {
@@ -66,7 +66,7 @@ export async function updateDocumentStatus(
   status: Document['status'],
   updates?: Partial<Document>
 ): Promise<void> {
-  const db = firestore();
+  const db = getDb();
   await db.collection(DOCUMENTS_COLLECTION).doc(documentId).update({
     status,
     ...updates,
@@ -82,7 +82,7 @@ export async function saveChunks(
   documentId: string,
   chunks: Array<{ content: string; embedding: number[]; tokenCount: number }>
 ): Promise<Chunk[]> {
-  const db = firestore();
+  const db = getDb();
   const batch = db.batch();
   const savedChunks: Chunk[] = [];
 
@@ -117,7 +117,7 @@ export async function saveChunks(
  * Get document by ID
  */
 export async function getDocument(id: string): Promise<Document | null> {
-  const db = firestore();
+  const db = getDb();
   const doc = await db.collection(DOCUMENTS_COLLECTION).doc(id).get();
 
   if (!doc.exists) {
@@ -137,7 +137,7 @@ export async function getDocument(id: string): Promise<Document | null> {
  * List documents (optionally by botId)
  */
 export async function listDocuments(botId?: string): Promise<Document[]> {
-  const db = firestore();
+  const db = getDb();
   let query = db.collection(DOCUMENTS_COLLECTION).orderBy('createdAt', 'desc');
 
   if (botId) {
@@ -164,7 +164,7 @@ export async function listDocuments(botId?: string): Promise<Document[]> {
  * Delete document and its chunks
  */
 export async function deleteDocumentAndChunks(documentId: string): Promise<void> {
-  const db = firestore();
+  const db = getDb();
 
   // Delete chunks
   const chunksSnapshot = await db
@@ -187,7 +187,7 @@ export async function searchSimilarChunks(
   queryEmbedding: number[],
   limit: number = 5
 ): Promise<SearchResult[]> {
-  const db = firestore();
+  const db = getDb();
 
   // Use Firestore native vector search with bot filter
   const vectorQuery: VectorQuery = db
