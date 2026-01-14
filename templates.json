@@ -32,6 +32,14 @@
       "tags": ["frontend", "react", "static", "cdn"],
       "difficulty": "beginner",
       "path": "templates/static-site"
+    },
+    {
+      "id": "pdf-extractor",
+      "name": "PDF Extractor",
+      "description": "GCS-triggered function that extracts data from PDFs using Gemini AI",
+      "tags": ["pdf", "gemini", "ai", "gcs", "extraction", "cloud-function", "document-processing"],
+      "difficulty": "intermediate",
+      "path": "templates/pdf-extractor"
     }
   ]
 }

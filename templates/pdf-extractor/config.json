@@ -1,0 +1,42 @@
+{
+  "project": {
+    "name": "{{projectName}}",
+    "gcpProjectId": "{{gcpProjectId}}",
+    "region": "{{region}}",
+    "backend": "gcp",
+    "networks": [
+      {
+        "name": "main",
+        "storageBuckets": [
+          {
+            "name": "{{projectName}}-uploads",
+            "location": "{{region}}"
+          },
+          {
+            "name": "{{projectName}}-processed",
+            "location": "{{region}}"
+          }
+        ],
+        "functions": [
+          {
+            "name": "pdf-processor",
+            "runtime": "nodejs20",
+            "entryPoint": "handler",
+            "memory": "1Gi",
+            "timeout": 300,
+            "allowUnauthenticated": false,
+            "trigger": {
+              "type": "storage",
+              "bucket": "{{projectName}}-uploads",
+              "event": "finalize"
+            },
+            "env": {
+              "OUTPUT_BUCKET": "{{projectName}}-processed",
+              "GEMINI_MODEL": "gemini-1.5-flash"
+            }
+          }
+        ]
+      }
+    ]
+  }
+}

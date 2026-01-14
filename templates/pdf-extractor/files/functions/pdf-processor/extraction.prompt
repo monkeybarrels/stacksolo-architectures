@@ -1,0 +1,28 @@
+Extract the key information from this document.
+
+Return the extracted data as structured JSON with the following format:
+{
+  "title": "Document title if present",
+  "date": "Document date if present",
+  "summary": "Brief summary of the document content",
+  "sections": [
+    {
+      "heading": "Section heading",
+      "content": "Section content"
+    }
+  ],
+  "keyFindings": ["List of important points or findings"],
+  "metadata": {
+    "documentType": "Type of document (letter, report, form, etc.)",
+    "pageCount": "Number of pages if determinable"
+  }
+}
+
+If specific sections are found (like "Decision", "Summary", "Findings", "Conclusion"),
+make sure to extract them with their exact headings.
+
+If no relevant information is found, return:
+{
+  "error": "NO_DATA_FOUND",
+  "reason": "Brief explanation of why data couldn't be extracted"
+}

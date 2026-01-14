@@ -1,0 +1,10 @@
+{
+  "name": "{{projectName}}",
+  "version": "1.0.0",
+  "private": true,
+  "description": "PDF extraction pipeline using Gemini AI",
+  "scripts": {
+    "build": "cd functions/pdf-processor && npm run build",
+    "dev": "cd functions/pdf-processor && npm run dev"
+  }
+}
