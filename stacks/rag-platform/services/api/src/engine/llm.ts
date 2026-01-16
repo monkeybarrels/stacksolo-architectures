@@ -3,7 +3,7 @@ import type { SearchResult } from './vectorstore';
 
 const PROJECT_ID = process.env.GCP_PROJECT_ID || '';
 const LOCATION = process.env.GCP_REGION || 'us-central1';
-const MODEL = 'gemini-1.5-flash';
+const MODEL = 'gemini-2.0-flash';
 
 // System prompt for the chatbot (without RAG context)
 const BASE_SYSTEM_PROMPT = `You are a helpful AI assistant. Answer questions clearly and concisely.

@@ -44,7 +44,7 @@ export interface ChatResult {
 }
 
 // Default configs
-const DEFAULT_VERTEX_MODEL = 'gemini-1.5-flash';
+const DEFAULT_VERTEX_MODEL = 'gemini-2.0-flash';
 const DEFAULT_OPENAI_MODEL = 'gpt-4o-mini';
 const DEFAULT_ANTHROPIC_MODEL = 'claude-3-haiku-20240307';
 

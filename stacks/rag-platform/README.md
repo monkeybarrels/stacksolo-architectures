@@ -6,7 +6,7 @@ AI-powered chatbot platform with knowledge base, admin dashboard, and extensible
 
 - **Chat Interface** - Clean, responsive chat UI at `/`
 - **RAG API** - REST API for chat at `/api/chat`
-- **Vertex AI** - Powered by Gemini 1.5 Flash
+- **Vertex AI** - Powered by Gemini 2.0 Flash
 
 ## Quick Start
 

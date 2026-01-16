@@ -105,7 +105,7 @@ export async function handler(event: CloudEvent<StorageObjectData>): Promise<voi
     const prompt = loadPrompt();
 
     // Initialize Gemini model
-    const modelName = process.env.GEMINI_MODEL || 'gemini-1.5-flash';
+    const modelName = process.env.GEMINI_MODEL || 'gemini-2.0-flash';
     console.log(`Using model: ${modelName}`);
 
     const model = vertexAI.getGenerativeModel({

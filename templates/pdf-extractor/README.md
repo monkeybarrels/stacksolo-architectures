@@ -57,7 +57,7 @@ In `stacksolo.config.json`:
 
 | Setting | Default | Description |
 |---------|---------|-------------|
-| `GEMINI_MODEL` | `gemini-1.5-flash` | Model to use (`gemini-1.5-flash`, `gemini-1.5-pro`) |
+| `GEMINI_MODEL` | `gemini-2.0-flash` | Model to use (`gemini-2.0-flash`, `gemini-2.0-pro`) |
 | `OUTPUT_BUCKET` | `{project}-processed` | Where to write JSON results |
 
 ### Using Gemini Pro for Better Accuracy
@@ -67,7 +67,7 @@ In `stacksolo.config.json`:
   "functions": [{
     "name": "pdf-processor",
     "env": {
-      "GEMINI_MODEL": "gemini-1.5-pro"
+      "GEMINI_MODEL": "gemini-2.0-pro"
     }
   }]
 }
@@ -86,7 +86,7 @@ Each processed PDF creates a JSON file:
     "file": "document.pdf",
     "processedAt": "2024-01-15T10:30:00Z"
   },
-  "model": "gemini-1.5-flash",
+  "model": "gemini-2.0-flash",
   "processingTimeMs": 2340,
   "extracted": {
     "title": "Document Title",
