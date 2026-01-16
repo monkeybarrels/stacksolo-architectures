@@ -1,0 +1,13 @@
+{
+  "name": "app-with-admin",
+  "version": "1.0.0",
+  "private": true,
+  "scripts": {
+    "dev": "stacksolo dev --local",
+    "build": "npm run build:shared && npm run build:functions && npm run build:apps",
+    "build:shared": "cd packages/shared && npm run build",
+    "build:functions": "cd functions/api && npm run build && cd ../admin && npm run build",
+    "build:apps": "cd apps/web && npm run build && cd ../admin-panel && npm run build",
+    "deploy": "stacksolo deploy"
+  }
+}

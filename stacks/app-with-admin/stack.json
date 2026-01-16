@@ -1,0 +1,52 @@
+{
+  "id": "app-with-admin",
+  "name": "App with Admin Panel",
+  "description": "Full-stack application with user-facing app, admin panel, and Firebase Auth with domain restriction for admin access",
+  "version": "1.0.0",
+  "tags": ["firebase", "admin", "vue", "full-stack", "saas"],
+  "difficulty": "intermediate",
+  "features": [
+    "User-facing Vue app with Firebase Auth",
+    "Admin panel with domain-restricted access",
+    "API function for main app",
+    "Admin API function with domain middleware",
+    "Shared Firestore database",
+    "Load balancer with path-based routing",
+    "CDN-enabled static hosting"
+  ],
+  "variables": {
+    "projectName": {
+      "description": "Name for your project (used in resource naming)",
+      "required": true,
+      "example": "my-app"
+    },
+    "gcpProjectId": {
+      "description": "Your GCP project ID",
+      "required": true,
+      "example": "my-project-123456"
+    },
+    "domain": {
+      "description": "Custom domain for your app",
+      "required": false,
+      "example": "myapp.com"
+    },
+    "adminDomains": {
+      "description": "Comma-separated email domains allowed for admin access",
+      "required": true,
+      "default": "yourdomain.com",
+      "example": "company.com,admin.company.com"
+    },
+    "region": {
+      "description": "GCP region for deployment",
+      "required": false,
+      "default": "us-east1"
+    }
+  },
+  "structure": {
+    "apps/web": "User-facing Vue application",
+    "apps/admin-panel": "Admin panel Vue application",
+    "functions/api": "Main API (Express + tRPC)",
+    "functions/admin": "Admin API with domain restriction",
+    "packages/shared": "Shared TypeScript types"
+  }
+}

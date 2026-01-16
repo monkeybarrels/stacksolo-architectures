@@ -8,6 +8,14 @@
       "tags": ["ai", "chatbot", "rag", "vertex-ai"],
       "difficulty": "intermediate",
       "path": "stacks/rag-platform"
+    },
+    {
+      "id": "app-with-admin",
+      "name": "App with Admin Panel",
+      "description": "Full-stack application with user-facing app, admin panel, and Firebase Auth with domain restriction for admin access",
+      "tags": ["firebase", "admin", "vue", "full-stack", "saas"],
+      "difficulty": "intermediate",
+      "path": "stacks/app-with-admin"
     }
   ]
 }

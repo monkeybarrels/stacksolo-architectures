@@ -1,0 +1,79 @@
+{
+  "$schema": "https://stacksolo.dev/schema/config.json",
+  "version": "1.0",
+  "project": {
+    "name": "{{projectName}}",
+    "gcpProjectId": "{{gcpProjectId}}",
+    "region": "{{region}}",
+    "networks": [
+      {
+        "name": "main",
+        "functions": [
+          {
+            "name": "api",
+            "runtime": "nodejs20",
+            "entryPoint": "handler",
+            "sourceDir": "./functions/api",
+            "memory": "512Mi",
+            "allowUnauthenticated": true,
+            "env": {
+              "NODE_ENV": "production"
+            }
+          },
+          {
+            "name": "admin",
+            "runtime": "nodejs20",
+            "entryPoint": "handler",
+            "sourceDir": "./functions/admin",
+            "memory": "512Mi",
+            "allowUnauthenticated": true,
+            "env": {
+              "NODE_ENV": "production",
+              "ADMIN_DOMAINS": "{{adminDomains}}"
+            }
+          }
+        ],
+        "uis": [
+          {
+            "name": "web",
+            "framework": "vue",
+            "sourceDir": "./apps/web",
+            "buildCommand": "npm run build",
+            "outputDir": "dist"
+          },
+          {
+            "name": "admin-panel",
+            "framework": "vue",
+            "sourceDir": "./apps/admin-panel",
+            "buildCommand": "npm run build",
+            "outputDir": "dist"
+          }
+        ],
+        "loadBalancer": {
+          "name": "gateway",
+          "domain": "{{domain}}",
+          "enableHttps": true,
+          "redirectHttpToHttps": true,
+          "routes": [
+            {
+              "path": "/api/*",
+              "backend": "api"
+            },
+            {
+              "path": "/admin-api/*",
+              "backend": "admin"
+            },
+            {
+              "path": "/admin/*",
+              "backend": "admin-panel"
+            },
+            {
+              "path": "/*",
+              "backend": "web"
+            }
+          ]
+        }
+      }
+    ]
+  }
+}
