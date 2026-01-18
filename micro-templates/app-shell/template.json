@@ -2,7 +2,9 @@
   "id": "app-shell",
   "name": "App Shell",
   "type": "shell",
-  "description": "Monorepo shell with feature packages, Firebase Auth, and Pinia stores",
+  "description": "Monorepo shell with feature packages, Firebase Auth, and state management",
+  "frameworks": ["vue", "react"],
+  "defaultFramework": "vue",
   "variables": [
     {
       "name": "org",
@@ -17,16 +19,9 @@
     }
   ],
   "secrets": [],
-  "dependencies": {
-    "vue": "^3.4.0",
-    "vue-router": "^4.2.0",
-    "pinia": "^2.1.0",
-    "firebase": "^10.0.0"
-  },
   "config": {
     "ui": {
       "name": "shell",
-      "framework": "vue",
       "sourceDir": "./packages/shell"
     }
   },

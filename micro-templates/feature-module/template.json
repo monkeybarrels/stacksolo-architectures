@@ -3,6 +3,8 @@
   "name": "Feature Module",
   "type": "feature",
   "description": "Add a new feature package to an app-shell monorepo",
+  "frameworks": ["vue", "react"],
+  "defaultFramework": "vue",
   "variables": [
     {
       "name": "name",
