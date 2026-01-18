@@ -1,0 +1,36 @@
+{
+  "id": "saas-starter",
+  "name": "SaaS Starter",
+  "description": "Complete SaaS foundation with Firebase Auth, Stripe billing, PostgreSQL, and admin dashboard",
+  "variables": [
+    {
+      "name": "projectName",
+      "description": "Your project name (lowercase, hyphens only)",
+      "type": "string",
+      "required": true
+    },
+    {
+      "name": "gcpProjectId",
+      "description": "Your GCP project ID",
+      "type": "string",
+      "required": true
+    },
+    {
+      "name": "region",
+      "description": "GCP region for deployment",
+      "type": "string",
+      "default": "us-central1"
+    }
+  ],
+  "variants": [
+    {
+      "id": "vue",
+      "name": "Vue",
+      "description": "Vue 3 with Vite, TypeScript, Tailwind CSS, and Pinia",
+      "filesDir": "files-vue"
+    }
+  ],
+  "dependencies": [
+    "@stacksolo/runtime"
+  ]
+}

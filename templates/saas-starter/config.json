@@ -1,0 +1,73 @@
+{
+  "project": {
+    "name": "{{projectName}}",
+    "gcpProjectId": "{{gcpProjectId}}",
+    "region": "{{region}}",
+    "backend": "gcp",
+    "plugins": [
+      "@stacksolo/plugin-gcp-cdktf",
+      "@stacksolo/plugin-gcp-kernel"
+    ],
+    "firebaseEmulators": {
+      "enabled": true
+    },
+    "gcpKernel": {
+      "name": "kernel",
+      "firebaseProjectId": "{{gcpProjectId}}"
+    },
+    "secrets": [
+      {
+        "name": "stripe-secret-key",
+        "description": "Stripe secret key (sk_live_xxx or sk_test_xxx)"
+      },
+      {
+        "name": "stripe-webhook-secret",
+        "description": "Stripe webhook signing secret (whsec_xxx)"
+      }
+    ],
+    "networks": [
+      {
+        "name": "main",
+        "sql": [
+          {
+            "name": "db",
+            "databaseVersion": "POSTGRES_15",
+            "tier": "db-f1-micro",
+            "diskSizeGb": 10
+          }
+        ],
+        "functions": [
+          {
+            "name": "api",
+            "runtime": "nodejs20",
+            "entryPoint": "handler",
+            "memory": "512Mi",
+            "env": {
+              "NODE_ENV": "production",
+              "DATABASE_URL": "@sql/db.connectionString",
+              "KERNEL_URL": "@gcp-kernel/kernel.url",
+              "KERNEL_TYPE": "gcp",
+              "STRIPE_SECRET_KEY": "@secret/stripe-secret-key",
+              "STRIPE_WEBHOOK_SECRET": "@secret/stripe-webhook-secret"
+            }
+          }
+        ],
+        "uis": [
+          {
+            "name": "web",
+            "framework": "vue",
+            "buildCommand": "npm run build",
+            "outputDir": "dist"
+          }
+        ],
+        "loadBalancer": {
+          "name": "gateway",
+          "routes": [
+            { "path": "/api/*", "backend": "api" },
+            { "path": "/*", "backend": "web" }
+          ]
+        }
+      }
+    ]
+  }
+}

@@ -2,6 +2,14 @@
   "version": "1",
   "templates": [
     {
+      "id": "saas-starter",
+      "name": "SaaS Starter",
+      "description": "Complete SaaS foundation with Firebase Auth, Stripe billing, PostgreSQL, and Vue 3 frontend",
+      "tags": ["saas", "stripe", "billing", "firebase", "auth", "postgresql", "drizzle", "vue", "subscriptions"],
+      "difficulty": "intermediate",
+      "path": "templates/saas-starter"
+    },
+    {
       "id": "firebase-app",
       "name": "Firebase App",
       "description": "Full-stack app with Firebase Auth and Firestore",
