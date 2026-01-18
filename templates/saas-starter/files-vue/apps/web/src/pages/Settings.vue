@@ -48,6 +48,11 @@ async function handleSave() {
     saving.value = false;
   }
 }
+
+function handleDeleteAccount() {
+  // TODO: Implement account deletion
+  alert('Account deletion would go here');
+}
 </script>
 
 <template>
@@ -125,7 +130,7 @@ async function handleSave() {
           <button
             type="button"
             class="mt-4 bg-red-600 hover:bg-red-700 text-white px-4 py-2 rounded-md text-sm font-medium"
-            @click="() => alert('Account deletion would go here')"
+            @click="handleDeleteAccount"
           >
             Delete Account
           </button>
