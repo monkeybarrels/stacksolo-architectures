@@ -2,6 +2,14 @@
   "version": "1",
   "templates": [
     {
+      "id": "ecommerce",
+      "name": "E-commerce Store",
+      "description": "Digital products store with Stripe products catalog, shopping cart, checkout, order management, and Vue 3 frontend",
+      "tags": ["ecommerce", "stripe", "products", "cart", "checkout", "orders", "payments", "postgresql", "vue"],
+      "difficulty": "intermediate",
+      "path": "templates/ecommerce"
+    },
+    {
       "id": "api-gateway",
       "name": "API Gateway",
       "description": "API monetization platform with key management, rate limiting (Redis), usage tracking, and developer portal",

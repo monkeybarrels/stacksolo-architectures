@@ -1,0 +1,37 @@
+{
+  "id": "ecommerce",
+  "name": "E-commerce Store",
+  "description": "Digital products store with Stripe checkout, product catalog, order management, and Vue 3 frontend",
+  "version": "1.0.0",
+  "author": "MonkeyBarrels",
+  "tags": ["ecommerce", "stripe", "checkout", "products", "orders", "digital", "store"],
+  "difficulty": "intermediate",
+  "variants": ["vue"],
+  "defaultVariant": "vue",
+  "variables": [
+    {
+      "name": "projectName",
+      "description": "Project name (lowercase, hyphens allowed)",
+      "default": "my-store"
+    },
+    {
+      "name": "gcpProjectId",
+      "description": "GCP Project ID",
+      "required": true
+    },
+    {
+      "name": "region",
+      "description": "GCP region",
+      "default": "us-central1"
+    }
+  ],
+  "postInstall": [
+    "npm install",
+    "echo 'Next steps:'",
+    "echo '1. Create Firebase project and get config'",
+    "echo '2. Set up Stripe account and get keys'",
+    "echo '3. Create products in Stripe Dashboard'",
+    "echo '4. Set environment variables'",
+    "echo '5. Run: stacksolo dev'"
+  ]
+}
