@@ -8,8 +8,14 @@ Community-maintained architecture templates for [StackSolo](https://stacksolo.de
 # Create a new project from a template
 stacksolo init --template firebase-app
 
+# Create a modular monorepo
+stacksolo init --template app-shell --name myorg
+
 # List available templates
 stacksolo init --list-templates
+
+# Add micro-templates to existing projects
+stacksolo add --list
 ```
 
 ## Available Templates
@@ -89,6 +95,51 @@ React static site optimized for CDN deployment.
 
 ```bash
 stacksolo init --template static-site
+```
+
+## Micro-Templates
+
+Micro-templates are single-purpose components you can add to existing projects.
+
+### Shells (Monorepo Foundations)
+
+| ID | Description |
+|----|-------------|
+| **app-shell** | Monorepo foundation with Firebase Auth, Pinia stores, feature packages |
+
+### Features (Add to Existing Shell)
+
+| ID | Description |
+|----|-------------|
+| **feature-module** | Add a new feature package to an app-shell monorepo |
+
+### Functions
+
+| ID | Description |
+|----|-------------|
+| **stripe-webhook** | Handle Stripe webhook events (subscriptions, payments) |
+| **stripe-checkout** | Create Stripe checkout sessions and customer portal |
+| **firebase-auth-api** | Auth middleware + profile endpoint with PostgreSQL sync |
+| **chat-api** | AI chat endpoint with Vertex AI streaming (SSE) |
+
+### UIs
+
+| ID | Description |
+|----|-------------|
+| **landing-page** | Marketing landing page with hero, features, pricing |
+| **auth-pages** | Login and signup pages with Firebase Authentication |
+| **dashboard-layout** | Sidebar + header layout for authenticated dashboards |
+| **billing-page** | Subscription management UI with Stripe integration |
+
+### Using Micro-Templates
+
+```bash
+# Add to existing StackSolo project
+stacksolo add stripe-webhook
+stacksolo add auth-pages
+
+# Add feature to app-shell monorepo
+stacksolo add feature-module --name inventory
 ```
 
 ## Available Architectures
