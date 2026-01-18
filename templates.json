@@ -2,6 +2,14 @@
   "version": "1",
   "templates": [
     {
+      "id": "ai-chat",
+      "name": "AI Chat",
+      "description": "AI chat application with Vertex AI (Gemini), streaming responses, conversation history, and Vue 3 frontend",
+      "tags": ["ai", "llm", "gemini", "vertex-ai", "chat", "streaming", "firestore", "vue", "sse"],
+      "difficulty": "intermediate",
+      "path": "templates/ai-chat"
+    },
+    {
       "id": "saas-starter",
       "name": "SaaS Starter",
       "description": "Complete SaaS foundation with Firebase Auth, Stripe billing, PostgreSQL, and Vue 3 frontend",

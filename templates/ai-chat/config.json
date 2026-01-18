@@ -1,0 +1,61 @@
+{
+  "project": {
+    "name": "{{projectName}}",
+    "gcpProjectId": "{{gcpProjectId}}",
+    "region": "{{region}}",
+    "backend": "gcp",
+    "plugins": [
+      "@stacksolo/plugin-gcp-cdktf",
+      "@stacksolo/plugin-gcp-kernel"
+    ],
+    "firebaseEmulators": {
+      "enabled": true
+    },
+    "gcpKernel": {
+      "name": "kernel",
+      "firebaseProjectId": "{{gcpProjectId}}"
+    },
+    "networks": [
+      {
+        "name": "main",
+        "functions": [
+          {
+            "name": "api",
+            "runtime": "nodejs20",
+            "entryPoint": "handler",
+            "memory": "1Gi",
+            "timeout": 300,
+            "env": {
+              "NODE_ENV": "production",
+              "KERNEL_URL": "@gcp-kernel/kernel.url",
+              "KERNEL_TYPE": "gcp",
+              "GCP_PROJECT_ID": "{{gcpProjectId}}",
+              "GCP_REGION": "{{region}}"
+            }
+          }
+        ],
+        "uis": [
+          {
+            "name": "web",
+            "framework": "vue",
+            "buildCommand": "npm run build",
+            "outputDir": "dist"
+          }
+        ],
+        "loadBalancer": {
+          "name": "gateway",
+          "routes": [
+            {
+              "path": "/api/*",
+              "backend": "api"
+            },
+            {
+              "path": "/*",
+              "backend": "web"
+            }
+          ]
+        }
+      }
+    ]
+  }
+}

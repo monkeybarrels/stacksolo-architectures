@@ -1,0 +1,47 @@
+{
+  "id": "ai-chat",
+  "name": "AI Chat",
+  "description": "AI-powered chat application with Vertex AI (Gemini), streaming responses, and conversation history",
+  "version": "1.0.0",
+  "author": "StackSolo",
+  "license": "MIT",
+  "tags": ["ai", "gemini", "vertex-ai", "chat", "streaming", "firestore", "vue"],
+  "difficulty": "intermediate",
+  "estimatedSetupTime": "15 minutes",
+  "variants": [
+    {
+      "id": "vue",
+      "name": "Vue",
+      "description": "Vue 3 with Vite, TypeScript, Tailwind CSS, and Pinia",
+      "filesDir": "files-vue"
+    }
+  ],
+  "variables": {
+    "projectName": {
+      "type": "string",
+      "description": "Project name",
+      "required": true
+    },
+    "gcpProjectId": {
+      "type": "string",
+      "description": "GCP Project ID",
+      "required": true
+    },
+    "region": {
+      "type": "string",
+      "description": "GCP region",
+      "default": "us-central1"
+    }
+  },
+  "dependencies": [
+    "@stacksolo/runtime"
+  ],
+  "features": [
+    "Vertex AI (Gemini) integration",
+    "Server-sent events for streaming",
+    "Conversation history in Firestore",
+    "Firebase Authentication",
+    "Real-time chat UI",
+    "Markdown rendering"
+  ]
+}
