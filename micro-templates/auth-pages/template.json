@@ -1,0 +1,18 @@
+{
+  "id": "auth-pages",
+  "name": "Auth Pages",
+  "type": "ui",
+  "description": "Login, signup pages with Firebase Auth",
+  "variables": [],
+  "secrets": [],
+  "dependencies": {
+    "firebase": "^10.0.0"
+  },
+  "config": {
+    "ui": {
+      "name": "auth",
+      "framework": "vue",
+      "sourceDir": "./apps/auth"
+    }
+  }
+}

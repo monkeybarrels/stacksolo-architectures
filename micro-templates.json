@@ -1,0 +1,85 @@
+{
+  "version": "1",
+  "microTemplates": [
+    {
+      "id": "stripe-webhook",
+      "name": "Stripe Webhook Handler",
+      "type": "function",
+      "description": "Handle Stripe webhook events (checkout, subscriptions, payments)",
+      "tags": ["stripe", "payments", "webhook"],
+      "path": "micro-templates/stripe-webhook"
+    },
+    {
+      "id": "stripe-checkout",
+      "name": "Stripe Checkout API",
+      "type": "function",
+      "description": "Create Stripe checkout sessions and customer portal links",
+      "tags": ["stripe", "payments", "checkout"],
+      "path": "micro-templates/stripe-checkout"
+    },
+    {
+      "id": "firebase-auth-api",
+      "name": "Firebase Auth API",
+      "type": "function",
+      "description": "Auth middleware + profile endpoint with PostgreSQL user sync",
+      "tags": ["firebase", "auth", "profile"],
+      "path": "micro-templates/firebase-auth-api"
+    },
+    {
+      "id": "chat-api",
+      "name": "AI Chat API",
+      "type": "function",
+      "description": "Streaming chat endpoint with Vertex AI (Gemini)",
+      "tags": ["ai", "chat", "gemini", "streaming"],
+      "path": "micro-templates/chat-api"
+    },
+    {
+      "id": "file-upload",
+      "name": "File Upload API",
+      "type": "function",
+      "description": "Signed URL generation for direct-to-GCS uploads",
+      "tags": ["upload", "gcs", "files"],
+      "path": "micro-templates/file-upload"
+    },
+    {
+      "id": "rate-limiter",
+      "name": "Rate Limiter Middleware",
+      "type": "function",
+      "description": "Redis-based rate limiting with sliding window",
+      "tags": ["rate-limit", "redis", "middleware"],
+      "path": "micro-templates/rate-limiter"
+    },
+    {
+      "id": "landing-page",
+      "name": "Landing Page",
+      "type": "ui",
+      "description": "Marketing landing page with hero, features, pricing sections",
+      "tags": ["landing", "marketing", "vue"],
+      "path": "micro-templates/landing-page"
+    },
+    {
+      "id": "auth-pages",
+      "name": "Auth Pages",
+      "type": "ui",
+      "description": "Login, signup, forgot password pages with Firebase Auth",
+      "tags": ["auth", "login", "firebase", "vue"],
+      "path": "micro-templates/auth-pages"
+    },
+    {
+      "id": "dashboard-layout",
+      "name": "Dashboard Layout",
+      "type": "ui",
+      "description": "Sidebar + header layout for authenticated dashboards",
+      "tags": ["dashboard", "layout", "vue"],
+      "path": "micro-templates/dashboard-layout"
+    },
+    {
+      "id": "billing-page",
+      "name": "Billing Page",
+      "type": "ui",
+      "description": "Subscription management UI with Stripe integration",
+      "tags": ["billing", "stripe", "subscription", "vue"],
+      "path": "micro-templates/billing-page"
+    }
+  ]
+}

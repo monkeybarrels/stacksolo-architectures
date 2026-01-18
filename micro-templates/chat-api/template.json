@@ -1,0 +1,21 @@
+{
+  "id": "chat-api",
+  "name": "AI Chat API",
+  "type": "function",
+  "description": "Streaming chat endpoint with Vertex AI (Gemini)",
+  "variables": [],
+  "secrets": [],
+  "dependencies": {
+    "@google-cloud/vertexai": "^1.0.0"
+  },
+  "config": {
+    "function": {
+      "name": "chat",
+      "runtime": "nodejs20",
+      "entryPoint": "chat",
+      "memory": "512Mi",
+      "timeout": 120,
+      "env": {}
+    }
+  }
+}

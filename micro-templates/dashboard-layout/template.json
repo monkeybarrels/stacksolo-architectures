@@ -1,0 +1,19 @@
+{
+  "id": "dashboard-layout",
+  "name": "Dashboard Layout",
+  "type": "ui",
+  "description": "Sidebar + header layout for authenticated dashboards",
+  "variables": [],
+  "secrets": [],
+  "dependencies": {
+    "vue": "^3.4.0",
+    "vue-router": "^4.2.0"
+  },
+  "config": {
+    "ui": {
+      "name": "dashboard",
+      "framework": "vue",
+      "sourceDir": "./apps/dashboard"
+    }
+  }
+}

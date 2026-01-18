@@ -1,0 +1,24 @@
+{
+  "id": "firebase-auth-api",
+  "name": "Firebase Auth API",
+  "type": "function",
+  "description": "Auth middleware + profile endpoint with PostgreSQL user sync",
+  "variables": [],
+  "secrets": [],
+  "dependencies": {
+    "@stacksolo/runtime": "^0.1.0",
+    "drizzle-orm": "^0.29.0",
+    "postgres": "^3.4.0"
+  },
+  "config": {
+    "function": {
+      "name": "auth",
+      "runtime": "nodejs20",
+      "entryPoint": "auth",
+      "memory": "256Mi",
+      "env": {
+        "DATABASE_URL": "@database/main.connectionString"
+      }
+    }
+  }
+}

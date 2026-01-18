@@ -1,0 +1,16 @@
+{
+  "id": "landing-page",
+  "name": "Landing Page",
+  "type": "ui",
+  "description": "Marketing landing page with hero, features, pricing sections",
+  "variables": [],
+  "secrets": [],
+  "dependencies": {},
+  "config": {
+    "ui": {
+      "name": "landing",
+      "framework": "vue",
+      "sourceDir": "./apps/landing"
+    }
+  }
+}

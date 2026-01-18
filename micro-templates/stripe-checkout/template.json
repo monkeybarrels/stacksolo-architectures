@@ -1,0 +1,20 @@
+{
+  "id": "stripe-checkout",
+  "name": "Stripe Checkout API",
+  "type": "function",
+  "description": "Create Stripe checkout sessions and customer portal links",
+  "variables": [],
+  "secrets": ["stripe-secret-key"],
+  "dependencies": {
+    "stripe": "^14.0.0"
+  },
+  "config": {
+    "function": {
+      "name": "checkout",
+      "runtime": "nodejs20",
+      "entryPoint": "handler",
+      "memory": "256Mi",
+      "sourceDir": "./functions/checkout"
+    }
+  }
+}

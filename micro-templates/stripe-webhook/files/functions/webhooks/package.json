@@ -1,0 +1,19 @@
+{
+  "name": "webhooks",
+  "version": "1.0.0",
+  "type": "module",
+  "main": "dist/index.js",
+  "scripts": {
+    "build": "tsup src/index.ts --format esm --target node20 --dts",
+    "dev": "tsup src/index.ts --format esm --target node20 --watch --onSuccess 'npx @google-cloud/functions-framework --source=dist --target=webhooks'"
+  },
+  "dependencies": {
+    "@google-cloud/functions-framework": "^3.3.0",
+    "stripe": "^14.0.0"
+  },
+  "devDependencies": {
+    "@types/node": "^20.0.0",
+    "tsup": "^8.0.0",
+    "typescript": "^5.0.0"
+  }
+}

@@ -1,0 +1,23 @@
+{
+  "id": "stripe-webhook",
+  "name": "Stripe Webhook Handler",
+  "type": "function",
+  "description": "Handle Stripe webhook events (checkout, subscriptions, payments)",
+  "variables": [],
+  "secrets": ["stripe-webhook-secret"],
+  "dependencies": {
+    "stripe": "^14.0.0"
+  },
+  "config": {
+    "function": {
+      "name": "webhooks",
+      "runtime": "nodejs20",
+      "entryPoint": "webhooks",
+      "memory": "256Mi",
+      "allowUnauthenticated": true,
+      "env": {
+        "STRIPE_WEBHOOK_SECRET": "@secret/stripe-webhook-secret"
+      }
+    }
+  }
+}
