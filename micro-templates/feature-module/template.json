@@ -1,0 +1,38 @@
+{
+  "id": "feature-module",
+  "name": "Feature Module",
+  "type": "feature",
+  "description": "Add a new feature package to an app-shell monorepo",
+  "variables": [
+    {
+      "name": "name",
+      "description": "Feature name (lowercase, e.g., 'inventory')",
+      "required": true
+    },
+    {
+      "name": "Name",
+      "description": "Feature name (PascalCase, e.g., 'Inventory')",
+      "required": true
+    },
+    {
+      "name": "org",
+      "description": "npm organization scope",
+      "default": "myorg",
+      "required": false
+    }
+  ],
+  "secrets": [],
+  "dependencies": {},
+  "feature": {
+    "sourceDir": "packages/feature-template",
+    "targetDir": "packages/feature-{{name}}",
+    "shellUpdates": {
+      "packageJson": "@{{org}}/feature-{{name}}: workspace:*",
+      "routerImport": "import { routes as {{name}}Routes } from '@{{org}}/feature-{{name}}';",
+      "routerSpread": "...{{name}}Routes,"
+    }
+  },
+  "postInstall": [
+    "pnpm install"
+  ]
+}

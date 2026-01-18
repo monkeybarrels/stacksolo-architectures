@@ -2,6 +2,22 @@
   "version": "1",
   "microTemplates": [
     {
+      "id": "app-shell",
+      "name": "App Shell",
+      "type": "shell",
+      "description": "Monorepo shell with feature packages, Firebase Auth, and Pinia stores",
+      "tags": ["shell", "monorepo", "auth", "vue", "pnpm"],
+      "path": "micro-templates/app-shell"
+    },
+    {
+      "id": "feature-module",
+      "name": "Feature Module",
+      "type": "feature",
+      "description": "Add a new feature package to an app-shell monorepo",
+      "tags": ["feature", "module", "monorepo", "vue"],
+      "path": "micro-templates/feature-module"
+    },
+    {
       "id": "stripe-webhook",
       "name": "Stripe Webhook Handler",
       "type": "function",

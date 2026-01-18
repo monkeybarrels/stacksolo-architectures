@@ -1,0 +1,30 @@
+{
+  "project": {
+    "name": "{{projectName}}",
+    "gcpProjectId": "{{gcpProjectId}}",
+    "region": "{{region}}"
+  },
+  "networks": [
+    {
+      "name": "main",
+      "uis": [
+        {
+          "name": "shell",
+          "framework": "vue",
+          "sourceDir": "./packages/shell"
+        }
+      ],
+      "loadBalancer": {
+        "name": "gateway",
+        "domain": "{{domain}}",
+        "enableHttps": true,
+        "routes": [
+          {
+            "path": "/*",
+            "backend": "shell"
+          }
+        ]
+      }
+    }
+  ]
+}
