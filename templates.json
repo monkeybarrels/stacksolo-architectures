@@ -2,6 +2,14 @@
   "version": "1",
   "templates": [
     {
+      "id": "api-gateway",
+      "name": "API Gateway",
+      "description": "API monetization platform with key management, rate limiting (Redis), usage tracking, and developer portal",
+      "tags": ["api", "gateway", "rate-limiting", "api-keys", "usage", "monetization", "redis", "postgresql", "vue"],
+      "difficulty": "advanced",
+      "path": "templates/api-gateway"
+    },
+    {
       "id": "ai-chat",
       "name": "AI Chat",
       "description": "AI chat application with Vertex AI (Gemini), streaming responses, conversation history, and Vue 3 frontend",

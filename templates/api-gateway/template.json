@@ -1,0 +1,35 @@
+{
+  "id": "api-gateway",
+  "name": "API Gateway",
+  "description": "API monetization platform with key management, rate limiting, usage tracking, and developer portal",
+  "version": "1.0.0",
+  "author": "MonkeyBarrels",
+  "tags": ["api", "gateway", "rate-limiting", "api-keys", "usage", "monetization", "redis", "postgresql"],
+  "difficulty": "advanced",
+  "variants": ["vue"],
+  "defaultVariant": "vue",
+  "variables": [
+    {
+      "name": "projectName",
+      "description": "Project name (lowercase, hyphens allowed)",
+      "default": "my-api-gateway"
+    },
+    {
+      "name": "gcpProjectId",
+      "description": "GCP Project ID",
+      "required": true
+    },
+    {
+      "name": "region",
+      "description": "GCP region",
+      "default": "us-central1"
+    }
+  ],
+  "postInstall": [
+    "npm install",
+    "echo 'Next steps:'",
+    "echo '1. Create Firebase project and get config'",
+    "echo '2. Set environment variables in .env.local'",
+    "echo '3. Run: stacksolo dev'"
+  ]
+}
