@@ -1,0 +1,20 @@
+{
+  "name": "@{{org}}/api",
+  "version": "0.0.1",
+  "private": true,
+  "type": "module",
+  "main": "dist/index.js",
+  "scripts": {
+    "dev": "tsup src/index.ts --format esm --target node20 --watch --onSuccess 'npx @google-cloud/functions-framework --source=dist --target=handler --port=8080'",
+    "build": "tsup src/index.ts --format esm --target node20",
+    "start": "npx @google-cloud/functions-framework --source=dist --target=handler"
+  },
+  "dependencies": {
+    "@google-cloud/functions-framework": "^3.3.0"
+  },
+  "devDependencies": {
+    "@types/node": "^20.10.0",
+    "tsup": "^8.0.1",
+    "typescript": "^5.3.3"
+  }
+}
